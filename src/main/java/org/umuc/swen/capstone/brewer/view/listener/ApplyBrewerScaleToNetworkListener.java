@@ -18,12 +18,14 @@ public class ApplyBrewerScaleToNetworkListener implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-//    ColorPaletteChooserDialog dialog = new ColorPaletteChooserDialog();
-//    dialog.showDialog();
-//    if (dialog.wasOKPressed()) {
-//      colorBrewerMapperUtil.applyFilterToNetworks("gal80Rexp", dialog.getColorPalette(), MapType.DIVERGING);
-//    }
-    ColorBrewerPaletteChooser colorBrewerPaletteChooser = new ColorBrewerPaletteChooser();
-    colorBrewerPaletteChooser.showDialog();
+    ColorBrewerPaletteChooser colorBrewerPaletteChooser = new ColorBrewerPaletteChooser(colorBrewerMapperUtil);
+    colorBrewerPaletteChooser.setVisible(true);
+    if (colorBrewerPaletteChooser.getSelectedPalette().isPresent() &&
+            colorBrewerPaletteChooser.getSelectedColumn().isPresent() &&
+            colorBrewerPaletteChooser.getSelectedMapType().isPresent()) {
+      colorBrewerMapperUtil.applyFilterToNetworks(colorBrewerPaletteChooser.getSelectedColumn().get(),
+              colorBrewerPaletteChooser.getSelectedPalette().get(),
+              colorBrewerPaletteChooser.getSelectedMapType().get());
+    }
   }
 }

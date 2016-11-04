@@ -8,7 +8,8 @@ public enum InvalidElement {
   INVALID_DATA_TYPE("invalid data type in column"),
   EXPECTED_QUALITATIVE_PALETTE("invalid palette type, expected Qualitative Palette"),
   EXPECTED_SEQUENTIAL_PALETTE("invalid palette type, expected Sequential Palette"),
-  EXPECTED_DIVERGING_PALETTE("invalid palette type, expected Diverging Palette");
+  EXPECTED_DIVERGING_PALETTE("invalid palette type, expected Diverging Palette"),
+  UNSUPPORTED_MAP_TYPE("invalid map type");
 
   private String element;
 

@@ -1,24 +1,18 @@
 package org.umuc.swen.capstone.brewer.model.util;
 
-import java.awt.Color;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.capstone.brewer.CyActivator;
+import org.umuc.swen.capstone.brewer.model.exception.InvalidBrewerColorMapper;
+import org.umuc.swen.capstone.brewer.model.exception.InvalidElement;
 import org.umuc.swen.capstone.brewer.model.mapping.BrewerScaleMapperFactory;
 import org.umuc.swen.capstone.brewer.model.mapping.FilterMapper;
 import org.umuc.swen.capstone.brewer.model.mapping.MapType;
@@ -68,5 +62,40 @@ public class ColorBrewerMapperUtil {
     networkViews.stream().forEach(CyNetworkView::updateView);
   }
 
+  /**
+   * Returns the {@link Set} of Column Names that are compatible for the specified {@link MapType}
+   *
+   * @param mapType {@link MapType}
+   * @return {@link Set} of {@link String}
+   */
+  public Set<String> getColumns(MapType mapType) {
+    return cyActivator.getNetworkManager().getNetworkSet().stream()
+            .map(cyNetwork -> cyNetwork.getDefaultNodeTable())
+            .map(cyTable -> cyTable.getColumns())
+            .filter(Objects::nonNull)
+            .flatMap(Collection::stream)
+            .filter(cyColumn -> shouldFilterColumn(mapType, cyColumn))
+            .map(cyColumn -> cyColumn.getName())
+            .filter(Objects::nonNull)
+            .filter(name -> !name.isEmpty())
+            .collect(Collectors.toSet());
+  }
 
+  private boolean shouldFilterColumn(MapType mapType, CyColumn cyColumn) {
+    switch (mapType) {
+      case DISCRETE:
+        return isNumeric(cyColumn.getType()) || cyColumn.getType() == String.class;
+      case CONTINUOUS:
+      case DIVERGING:
+        return isNumeric(cyColumn.getType());
+    }
+    throw new InvalidBrewerColorMapper(mapType, InvalidElement.UNSUPPORTED_MAP_TYPE);
+  }
+
+  private boolean isNumeric(Class type) {
+    return type == Integer.class ||
+            type == Double.class ||
+            type == Long.class ||
+            type == Float.class;
+  }
 }
