@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
@@ -33,27 +32,28 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private final static String CANCEL = "Cancel";
   private final static String RESET = "Reset";
 
-  private final JColorChooser colorPanel;
+  private final static int COLUMNS_INDEX = 0;
+  private final static int RADIO_BUTTON_INDEX = 1;
+  private final static int COLOR_PANEL_INDEX = 2;
+  private final static int BUTTONS_INDEX = 3;
+
   private final ColorBrewerMapperUtil colorBrewerMapperUtil;
-  private Optional<ColorBrewer> colorBrewer = Optional.empty();
-  private Optional<MapType> mapType = Optional.empty();
-  private Optional<String> columnName = Optional.empty();
-  private JComboBox<String> columns;
+  private JColorChooser colorPanel;
+  private Optional<ColorBrewer> selectedColorBrewer = Optional.empty();
+  private Optional<MapType> selectedMapType = Optional.empty();
+  private Optional<String> selectedColumnName = Optional.empty();
+  private JComboBox<String> columnsComboBox;
   private ButtonGroup mappersButtonGroup;
   private DisableApplyColorSchemeListener listener;
-  private JButton applyColorBrewer;
+  private JButton applyColorBrewerButton;
 
   private JPanel mainPanel = new JPanel();
-  private JPanel buttonPanel = new JPanel();
+  private JPanel buttonPanel;
 
   public ColorBrewerPaletteChooser(ColorBrewerMapperUtil colorBrewerMapperUtil) {
     super(null, "ColorBrewer", ModalityType.DOCUMENT_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
-
-    colorPanel = new JColorChooser(new MyColorPanelSelectionModel(listener));
-    applyColorBrewer = new JButton(APPLY_COLOR_PALLETE);
-    applyColorBrewer.setActionCommand(APPLY_COLOR_PALLETE);
 
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
     buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -64,35 +64,35 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   public void setColorPanel(AbstractColorChooserPanel abstractColorChooserPanel, MapType mapType) {
     clearSelections();
     colorPanel.setChooserPanels(new AbstractColorChooserPanel[]{abstractColorChooserPanel});
-    columns.setModel(new DefaultComboBoxModel(colorBrewerMapperUtil.getColumns(mapType).toArray()));
+    columnsComboBox.setModel(new DefaultComboBoxModel(colorBrewerMapperUtil.getColumns(mapType).toArray()));
     setNewSelections();
     revalidate();
     repaint();
   }
 
   public Optional<ColorBrewer> getSelectedPalette() {
-    return this.colorBrewer;
+    return this.selectedColorBrewer;
   }
 
   public Optional<MapType> getSelectedMapType() {
-    return this.mapType;
+    return this.selectedMapType;
   }
 
   public Optional<String> getSelectedColumn() {
-    return this.columnName;
+    return this.selectedColumnName;
   }
 
   public void disableApplyColorBrewerButton() {
-    this.applyColorBrewer.setEnabled(false);
+    this.applyColorBrewerButton.setEnabled(false);
   }
 
   public void enableApplyColorBrewerButton() {
-    this.applyColorBrewer.setEnabled(true);
+    this.applyColorBrewerButton.setEnabled(true);
   }
 
   @Override
   public void colorChanged() {
-    colorBrewer = Optional.ofNullable(((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).getColorBrewer());
+    selectedColorBrewer = Optional.ofNullable(((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).getColorBrewer());
   }
 
   @Override
@@ -113,10 +113,44 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   }
 
   public void setColumnSelection() {
-    columnName = Optional.ofNullable((String)columns.getSelectedItem());
+    selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
   }
 
   private void initializeDialog() {
+    createAndAddJComboBoxForColumnSelection(mainPanel);
+    createAndAddRadioButtonLayout(mainPanel);
+    createAndAddColorPanel(mainPanel);
+    createAndAddButtonLayout(mainPanel);
+
+    add(mainPanel);
+
+    setDefaultSelectionToSequentialMapper();
+
+    disableApplyColorBrewerButton();
+    pack();
+  }
+
+  private void setDefaultSelectionToSequentialMapper() {
+    ((JRadioButton)((JPanel)getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
+    setColorPanel(new SequentialColorPalettePanel(), MapType.CONTINUOUS);
+    this.selectedMapType = Optional.of(MapType.CONTINUOUS);
+    this.selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
+  }
+
+  private void createAndAddColorPanel(JPanel panel) {
+    colorPanel = new JColorChooser(new MyColorPanelSelectionModel(listener));
+    colorPanel.removeAll();
+    ((MyColorPanelSelectionModel)colorPanel.getSelectionModel()).setSelectedColorChangedListener(this);
+    panel.add(colorPanel, COLOR_PANEL_INDEX);
+  }
+
+  private void createAndAddJComboBoxForColumnSelection(JPanel panel) {
+    columnsComboBox = new JComboBox();
+    columnsComboBox.addActionListener(new ColumnSelectionListener(this, listener));
+    panel.add(columnsComboBox, COLUMNS_INDEX);
+  }
+
+  private void createAndAddRadioButtonLayout(JPanel panel) {
     JPanel radioPanel = new JPanel();
 
     JRadioButton sequential = new JRadioButton("Sequential");
@@ -140,50 +174,42 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     radioPanel.add(qualitative);
     radioPanel.add(diverging);
 
-    columns = new JComboBox();
-    columns.addActionListener(new ColumnSelectionListener(this, listener));
+    panel.add(radioPanel, RADIO_BUTTON_INDEX);
+  }
 
-    JButton cancel = new JButton(CANCEL);
-    cancel.setActionCommand(CANCEL);
-    cancel.addActionListener(this);
-    JButton reset = new JButton(RESET);
-    reset.setActionCommand(RESET);
-    reset.addActionListener(this);
-    buttonPanel.add(reset);
-    buttonPanel.add(cancel);
-    buttonPanel.add(applyColorBrewer);
-    applyColorBrewer.addActionListener(this);
-    colorPanel.removeAll();
+  private void createAndAddButtonLayout(JPanel panel) {
+    buttonPanel = new JPanel();
 
-    // add everything
-    mainPanel.add(columns);
-    mainPanel.add(radioPanel);
-    mainPanel.add(colorPanel);
-    mainPanel.add(buttonPanel);
-    add(mainPanel);
-    ((MyColorPanelSelectionModel)colorPanel.getSelectionModel()).setSelectedColorChangedListener(this);
+    applyColorBrewerButton = new JButton(APPLY_COLOR_PALLETE);
+    JButton cancelButton = new JButton(CANCEL);
+    JButton resetButton = new JButton(RESET);
 
-    // set initial selection to sequential
-    sequential.setSelected(true);
-    setColorPanel(new SequentialColorPalettePanel(), MapType.CONTINUOUS);
-    this.mapType = Optional.of(MapType.CONTINUOUS);
-    this.columnName = Optional.ofNullable((String)columns.getSelectedItem());
+    applyColorBrewerButton.setActionCommand(APPLY_COLOR_PALLETE);
+    cancelButton.setActionCommand(CANCEL);
+    resetButton.setActionCommand(RESET);
 
-    disableApplyColorBrewerButton();
-    pack();
+    applyColorBrewerButton.addActionListener(this);
+    cancelButton.addActionListener(this);
+    resetButton.addActionListener(this);
+
+    buttonPanel.add(resetButton);
+    buttonPanel.add(cancelButton);
+    buttonPanel.add(applyColorBrewerButton);
+
+    panel.add(buttonPanel, BUTTONS_INDEX);
   }
 
   private void clearSelections() {
-    colorBrewer = Optional.empty();
+    selectedColorBrewer = Optional.empty();
     ((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).setColorBrewer(null);
-    columnName = Optional.empty();
-    columns.setSelectedItem(null);
+    selectedColumnName = Optional.empty();
+    columnsComboBox.setSelectedItem(null);
     disableApplyColorBrewerButton();
   }
 
   private void setNewSelections() {
-    colorBrewer = Optional.ofNullable(((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).getColorBrewer());
-    columnName = Optional.ofNullable((String)columns.getSelectedItem());
-    mapType = Optional.ofNullable(MapType.valueOf(mappersButtonGroup.getSelection().getActionCommand()));
+    selectedColorBrewer = Optional.ofNullable(((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).getColorBrewer());
+    selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
+    selectedMapType = Optional.ofNullable(MapType.valueOf(mappersButtonGroup.getSelection().getActionCommand()));
   }
 }
