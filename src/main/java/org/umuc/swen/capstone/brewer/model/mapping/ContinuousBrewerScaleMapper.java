@@ -26,6 +26,7 @@ public class ContinuousBrewerScaleMapper<T extends Number> extends AbstractBrewe
     this.colorScale = 100;
     this.colors = Arrays.asList(colorBrewer.getColorPalette(this.colorScale));
     this.maxValue = values.stream()
+            .filter(Objects::nonNull)
             .map(value -> Double.valueOf(Math.abs(value.doubleValue())))
             .max((d1, d2) -> d1.compareTo(d2))
             .orElseThrow(() -> new InvalidDataException(columnName));
