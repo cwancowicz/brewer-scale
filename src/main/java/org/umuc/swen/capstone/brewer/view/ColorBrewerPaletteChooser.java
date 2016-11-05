@@ -56,7 +56,6 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     listener = new DisableApplyColorSchemeListener(this);
 
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
     initializeDialog();
   }
@@ -131,7 +130,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   }
 
   private void setDefaultSelectionToSequentialMapper() {
-    ((JRadioButton)((JPanel)getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
+    ((JRadioButton)((JPanel)mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
     setColorPanel(new SequentialColorPalettePanel(), MapType.CONTINUOUS);
     this.selectedMapType = Optional.of(MapType.CONTINUOUS);
     this.selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
@@ -179,6 +178,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   private void createAndAddButtonLayout(JPanel panel) {
     buttonPanel = new JPanel();
+    buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
     applyColorBrewerButton = new JButton(APPLY_COLOR_PALLETE);
     JButton cancelButton = new JButton(CANCEL);
