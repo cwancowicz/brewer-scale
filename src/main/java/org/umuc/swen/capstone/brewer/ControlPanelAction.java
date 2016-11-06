@@ -10,9 +10,9 @@ import org.cytoscape.application.swing.CytoPanelState;
 
 public class ControlPanelAction extends AbstractCyAction {
 
+  public static final String APP_TITLE = "Color Brewer";
   private static final long serialVersionUID = 1L;
-  private static final String APP_TITLE = "Brewer Scale";
-  private static final String APP_MENU = "Apps.Samples";
+  private static final String APP_MENU = "Apps";
 
   private CySwingApplication desktopApp;
   private final CytoPanel cytoPanelWest;

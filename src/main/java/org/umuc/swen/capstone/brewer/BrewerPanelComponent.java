@@ -9,8 +9,6 @@ import org.umuc.swen.capstone.brewer.view.BrewerScaleMainPanel;
 
 public class BrewerPanelComponent implements CytoPanelComponent {
 
-  private final static String TITLE = "ColorBrewer";
-
   private final BrewerScaleMainPanel brewerScaleMainPanel;
 
   public BrewerPanelComponent(ColorBrewerMapperUtil colorBrewerMapperUtil) {
@@ -26,7 +24,7 @@ public class BrewerPanelComponent implements CytoPanelComponent {
   }
 
   public String getTitle() {
-    return TITLE;
+    return ControlPanelAction.APP_TITLE;
   }
 
   public Icon getIcon() {
