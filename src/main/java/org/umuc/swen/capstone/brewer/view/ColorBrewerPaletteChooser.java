@@ -51,7 +51,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private JPanel buttonPanel;
 
   public ColorBrewerPaletteChooser(ColorBrewerMapperUtil colorBrewerMapperUtil) {
-    super(null, "ColorBrewer", ModalityType.DOCUMENT_MODAL);
+    super(null, Resources.APP_TITLE, ModalityType.DOCUMENT_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
 
@@ -211,5 +211,10 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     selectedColorBrewer = Optional.ofNullable(((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).getColorBrewer());
     selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
     selectedMapType = Optional.ofNullable(MapType.valueOf(mappersButtonGroup.getSelection().getActionCommand()));
+  }
+
+  public class Resources {
+    public static final String APP_TITLE = "Color Cast";
+    public static final String APP_MENU = "Apps";
   }
 }
