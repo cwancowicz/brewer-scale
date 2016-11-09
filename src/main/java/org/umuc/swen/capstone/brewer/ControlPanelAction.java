@@ -6,21 +6,20 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
+import org.umuc.swen.capstone.brewer.view.ColorBrewerPaletteChooser;
 
 
 public class ControlPanelAction extends AbstractCyAction {
 
   private static final long serialVersionUID = 1L;
-  private static final String APP_TITLE = "Brewer Scale";
-  private static final String APP_MENU = "Apps.Samples";
 
   private CySwingApplication desktopApp;
   private final CytoPanel cytoPanelWest;
   private BrewerPanelComponent brewerPanelComponent;
 
   public ControlPanelAction(CySwingApplication desktopApp, BrewerPanelComponent myCytoPanel) {
-    super(APP_TITLE);
-    setPreferredMenu(APP_MENU);
+    super(ColorBrewerPaletteChooser.Resources.APP_TITLE);
+    setPreferredMenu(ColorBrewerPaletteChooser.Resources.APP_MENU);
 
     this.desktopApp = desktopApp;
     this.cytoPanelWest = this.desktopApp.getCytoPanel(CytoPanelName.WEST);

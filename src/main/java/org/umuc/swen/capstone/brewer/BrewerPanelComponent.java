@@ -6,10 +6,9 @@ import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.umuc.swen.capstone.brewer.model.util.ColorBrewerMapperUtil;
 import org.umuc.swen.capstone.brewer.view.BrewerScaleMainPanel;
+import org.umuc.swen.capstone.brewer.view.ColorBrewerPaletteChooser;
 
 public class BrewerPanelComponent implements CytoPanelComponent {
-
-  private final static String TITLE = "ColorBrewer";
 
   private final BrewerScaleMainPanel brewerScaleMainPanel;
 
@@ -26,7 +25,7 @@ public class BrewerPanelComponent implements CytoPanelComponent {
   }
 
   public String getTitle() {
-    return TITLE;
+    return ColorBrewerPaletteChooser.Resources.APP_TITLE;
   }
 
   public Icon getIcon() {
