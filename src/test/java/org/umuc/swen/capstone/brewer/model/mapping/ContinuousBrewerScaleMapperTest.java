@@ -51,7 +51,7 @@ public class ContinuousBrewerScaleMapperTest {
     Class type = Integer.class;
     int value = 72;
     List<Integer> values = Arrays.asList(value, RANDOM.nextInt(100), RANDOM.nextInt(100),
-            RANDOM.nextInt(100), RANDOM.nextInt(100), 100);
+            RANDOM.nextInt(100), RANDOM.nextInt(100), 100, 0);
 
     when(row.get(columnName, type)).thenReturn(value);
     when(cyNetworkView.getNodeView(node)).thenReturn(view);
@@ -85,9 +85,9 @@ public class ContinuousBrewerScaleMapperTest {
     ColorBrewer colorBrewer = ColorBrewer.Blues;
     Color[] colors = colorBrewer.getColorPalette(100);
     Class type = Double.class;
-    Double minValue = 0.0;
     List<Integer> values = Arrays.asList(RANDOM.nextInt(100), RANDOM.nextInt(100),
             RANDOM.nextInt(100), RANDOM.nextInt(100), 100);
+    Double minValue = values.stream().min(Integer::compare).map(Integer::doubleValue).get();
 
     when(row.get(columnName, type)).thenReturn(minValue);
     when(cyNetworkView.getNodeView(node)).thenReturn(view);
@@ -96,6 +96,42 @@ public class ContinuousBrewerScaleMapperTest {
     continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
 
     verify(view).setLockedValue(any(), eq(colors[0]));
+  }
+
+  @Test
+  public void shouldGetLightestColorOnTheColorScaleWithNegativeNumbers() {
+    ColorBrewer colorBrewer = ColorBrewer.Blues;
+    Color[] colors = colorBrewer.getColorPalette(100);
+    Class type = Double.class;
+    List<Integer> values = Arrays.asList(RANDOM.nextInt(100) * -1, RANDOM.nextInt(100),
+            RANDOM.nextInt(100) * -1, RANDOM.nextInt(100), 100);
+    Double minValue = values.stream().min(Integer::compare).map(Integer::doubleValue).get();
+
+    when(row.get(columnName, type)).thenReturn(minValue);
+    when(cyNetworkView.getNodeView(node)).thenReturn(view);
+
+    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
+    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
+
+    verify(view).setLockedValue(any(), eq(colors[0]));
+  }
+
+  @Test
+  public void shouldGetDarkestColorOnTheColorScaleWithNegativeNumbers() {
+    ColorBrewer colorBrewer = ColorBrewer.Blues;
+    Color[] colors = colorBrewer.getColorPalette(100);
+    Class type = Integer.class;
+    Integer maxValue = 100;
+    List<Integer> values = Arrays.asList(RANDOM.nextInt(100), RANDOM.nextInt(100) * -1,
+            RANDOM.nextInt(100), RANDOM.nextInt(100) * -1, maxValue);
+
+    when(row.get(columnName, type)).thenReturn(maxValue);
+    when(cyNetworkView.getNodeView(node)).thenReturn(view);
+
+    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
+    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
+
+    verify(view).setLockedValue(any(), eq(colors[colors.length - 1]));
   }
 
   @Test
