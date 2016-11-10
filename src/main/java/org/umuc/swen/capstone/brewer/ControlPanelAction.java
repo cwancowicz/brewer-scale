@@ -11,7 +11,6 @@ import org.umuc.swen.capstone.brewer.view.ColorBrewerPaletteChooser;
 
 public class ControlPanelAction extends AbstractCyAction {
 
-  public static final String APP_TITLE = "Color Brewer";
   private static final long serialVersionUID = 1L;
 
   private CySwingApplication desktopApp;
