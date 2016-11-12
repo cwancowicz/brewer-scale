@@ -54,7 +54,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private JPanel buttonPanel;
 
   public ColorBrewerPaletteChooser(ColorBrewerMapperUtil colorBrewerMapperUtil) {
-    super(null, Resources.APP_TITLE, ModalityType.DOCUMENT_MODAL);
+    super(null, Resources.APP_TITLE, ModalityType.APPLICATION_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
 
