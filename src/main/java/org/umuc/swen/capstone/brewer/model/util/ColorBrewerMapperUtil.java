@@ -68,7 +68,7 @@ public class ColorBrewerMapperUtil {
    * @param mapType {@link MapType}
    * @return {@link Set} of {@link String}
    */
-  public Set<String> getColumns(MapType mapType) {
+  public Collection<String> getColumns(MapType mapType) {
     return cyActivator.getNetworkManager().getNetworkSet().stream()
             .map(cyNetwork -> cyNetwork.getDefaultNodeTable())
             .map(cyTable -> cyTable.getColumns())
@@ -78,7 +78,8 @@ public class ColorBrewerMapperUtil {
             .map(cyColumn -> cyColumn.getName())
             .filter(Objects::nonNull)
             .filter(name -> !name.isEmpty())
-            .collect(Collectors.toSet());
+            .sorted((name1, name2) -> name1.compareTo(name2))
+            .collect(Collectors.toList());
   }
 
   private boolean shouldFilterColumn(MapType mapType, CyColumn cyColumn) {

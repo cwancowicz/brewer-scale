@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
@@ -31,11 +32,13 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private final static String APPLY_COLOR_PALLETE = "Apply Color Palette";
   private final static String CANCEL = "Cancel";
   private final static String RESET = "Reset";
+  private final static String COLUMN_LABEL = "Please select a data column below";
 
-  private final static int COLUMNS_INDEX = 0;
-  private final static int RADIO_BUTTON_INDEX = 1;
-  private final static int COLOR_PANEL_INDEX = 2;
-  private final static int BUTTONS_INDEX = 3;
+  private final static int COLUMNS_LABEL_PANEL = 0;
+  private final static int COLUMNS_INDEX = 1;
+  private final static int RADIO_BUTTON_INDEX = 2;
+  private final static int COLOR_PANEL_INDEX = 3;
+  private final static int BUTTONS_INDEX = 4;
 
   private final ColorBrewerMapperUtil colorBrewerMapperUtil;
   private JColorChooser colorPanel;
@@ -51,7 +54,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private JPanel buttonPanel;
 
   public ColorBrewerPaletteChooser(ColorBrewerMapperUtil colorBrewerMapperUtil) {
-    super(null, Resources.APP_TITLE, ModalityType.DOCUMENT_MODAL);
+    super(null, Resources.APP_TITLE, ModalityType.APPLICATION_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
 
@@ -144,8 +147,12 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   }
 
   private void createAndAddJComboBoxForColumnSelection(JPanel panel) {
+    JPanel columnPanel = new JPanel();
     columnsComboBox = new JComboBox();
     columnsComboBox.addActionListener(new ColumnSelectionListener(this, listener));
+    columnPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+    columnPanel.add(new JLabel(COLUMN_LABEL));
+    panel.add(columnPanel, COLUMNS_LABEL_PANEL);
     panel.add(columnsComboBox, COLUMNS_INDEX);
   }
 
