@@ -11,7 +11,7 @@ import org.umuc.swen.capstone.brewer.view.listener.ApplyBrewerScaleToNetworkList
  */
 public class BrewerScaleMainPanel extends JPanel {
 
-  private static final String APPLY_BREWER_SCALE_BUTTON_TEXT = "Apply Brewer Scale to Network";
+  private static final String APPLY_BREWER_SCALE_BUTTON_TEXT = "Apply Color Cast to Network";
   private static final String ABOUT_COLOR_CAST = "About Color Cast";
 
   private JButton applyBrewerScaleButton;
