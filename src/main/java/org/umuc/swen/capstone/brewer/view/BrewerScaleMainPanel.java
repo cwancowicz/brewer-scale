@@ -3,6 +3,7 @@ package org.umuc.swen.capstone.brewer.view;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.umuc.swen.capstone.brewer.model.util.ColorBrewerMapperUtil;
+import org.umuc.swen.capstone.brewer.view.listener.AboutColorCastListener;
 import org.umuc.swen.capstone.brewer.view.listener.ApplyBrewerScaleToNetworkListener;
 
 /**
@@ -11,8 +12,10 @@ import org.umuc.swen.capstone.brewer.view.listener.ApplyBrewerScaleToNetworkList
 public class BrewerScaleMainPanel extends JPanel {
 
   private static final String APPLY_BREWER_SCALE_BUTTON_TEXT = "Apply Brewer Scale to Network";
+  private static final String ABOUT_COLOR_CAST = "About Color Cast";
 
   private JButton applyBrewerScaleButton;
+  private JButton aboutColorCast;
   final private ColorBrewerMapperUtil colorBrewerMapperUtil;
 
   public BrewerScaleMainPanel(ColorBrewerMapperUtil colorBrewerMapperUtil) {
@@ -24,10 +27,14 @@ public class BrewerScaleMainPanel extends JPanel {
   private void createViewElements() {
     applyBrewerScaleButton = new JButton(APPLY_BREWER_SCALE_BUTTON_TEXT);
     applyBrewerScaleButton.addActionListener(new ApplyBrewerScaleToNetworkListener(colorBrewerMapperUtil));
+
+    aboutColorCast = new JButton(ABOUT_COLOR_CAST);
+    aboutColorCast.addActionListener(new AboutColorCastListener(this));
   }
 
   private void addViewElements() {
     this.add(applyBrewerScaleButton);
+    this.add(aboutColorCast);
     this.setVisible(true);
   }
 }
