@@ -23,6 +23,7 @@
     <resources>
         <resource>
             <directory>src/main/resources</directory>
+            <filtering>true</filtering>
         </resource>
     </resources>
      <!--Cytoscape requires Java 1.8 -->
