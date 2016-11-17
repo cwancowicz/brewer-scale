@@ -15,7 +15,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>org.umuc.swen</groupId>
 <artifactId>colorcast</artifactId>
-<version>1.0</version>
+<version>1.0.0</version>
 
 <name>${artifactId}</name>
 <packaging>bundle</packaging>
@@ -79,11 +79,11 @@
                 <instructions>
                     <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                     <Bundle-Version>${project.version}</Bundle-Version>
+                    <Bundle-Name>Color Cast</Bundle-Name>
                     <Import-Package>*</Import-Package>
                     <Private-Package>${bundle.namespace}.*</Private-Package>
                     <Bundle-Activator>${bundle.namespace}.CyActivator</Bundle-Activator>
                     <Embed-Dependency>jcolorbrewer</Embed-Dependency>
-                    <Bundle-Name>${app.name}</Bundle-Name>
                 </instructions>
             </configuration>
         </plugin>
