@@ -41,7 +41,7 @@ public class AboutColorCastListener implements ActionListener {
   }
 
   private String getVersion() {
-    return properties.getProperty(COLORCAST_VERSION, DEFAULT_VERSION).replaceAll("-SNAPSHOT", "");
+    return properties.getProperty(COLORCAST_VERSION, DEFAULT_VERSION);
   }
 
   private String getMessage() {
