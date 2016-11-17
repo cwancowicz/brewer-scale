@@ -20,12 +20,12 @@
 <packaging>bundle</packaging>
 
 <build>
-    <!--<resources>-->
-        <!--<resource>-->
-            <!--<directory>src/main/resources</directory>-->
-        <!--</resource>-->
-    <!--</resources>-->
-    <!-- Cytoscape requires Java 1.8 -->
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+    </resources>
+     <!--Cytoscape requires Java 1.8 -->
     <plugins>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -128,11 +128,6 @@
     <dependency>
         <groupId>org.cytoscape</groupId>
         <artifactId>swing-application-api</artifactId>
-        <version>${cytoscape.api.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.cytoscape</groupId>
-        <artifactId>session-api</artifactId>
         <version>${cytoscape.api.version}</version>
     </dependency>
 
