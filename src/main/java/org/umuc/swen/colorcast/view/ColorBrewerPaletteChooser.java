@@ -15,6 +15,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import org.jcolorbrewer.ColorBrewer;
 import org.jcolorbrewer.ui.SequentialColorPalettePanel;
@@ -56,6 +58,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   public ColorBrewerPaletteChooser(Component rootComponent, ColorBrewerMapperUtil colorBrewerMapperUtil) {
     super(null, Resources.APP_TITLE, ModalityType.APPLICATION_MODAL);
+    setLookAndFeel();
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
 
@@ -219,6 +222,21 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     selectedColorBrewer = Optional.ofNullable(((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).getColorBrewer());
     selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
     selectedMapType = Optional.ofNullable(MapType.valueOf(mappersButtonGroup.getSelection().getActionCommand()));
+  }
+
+  private void setLookAndFeel() {
+    try {
+      UIManager.setLookAndFeel(
+              UIManager.getCrossPlatformLookAndFeelClassName());
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (UnsupportedLookAndFeelException e) {
+      e.printStackTrace();
+    }
   }
 
   public class Resources {
