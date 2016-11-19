@@ -1,5 +1,6 @@
 package org.umuc.swen.colorcast.view;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,14 +54,13 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private JPanel mainPanel = new JPanel();
   private JPanel buttonPanel;
 
-  public ColorBrewerPaletteChooser(ColorBrewerMapperUtil colorBrewerMapperUtil) {
+  public ColorBrewerPaletteChooser(Component rootComponent, ColorBrewerMapperUtil colorBrewerMapperUtil) {
     super(null, Resources.APP_TITLE, ModalityType.APPLICATION_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
 
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-    initializeDialog();
+    initializeDialog(rootComponent);
   }
 
   public void setColorPanel(AbstractColorChooserPanel abstractColorChooserPanel, MapType mapType) {
@@ -118,7 +118,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
   }
 
-  private void initializeDialog() {
+  private void initializeDialog(Component rootComponent) {
     createAndAddJComboBoxForColumnSelection(mainPanel);
     createAndAddRadioButtonLayout(mainPanel);
     createAndAddColorPanel(mainPanel);
@@ -130,6 +130,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
     disableApplyColorBrewerButton();
     pack();
+    setLocationRelativeTo(rootComponent);
   }
 
   private void setDefaultSelectionToSequentialMapper() {
@@ -222,6 +223,6 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   public class Resources {
     public static final String APP_TITLE = "Color Cast";
-    public static final String APP_MENU = "Apps";
+    public static final String APP_MENU = "Tools."+APP_TITLE;
   }
 }

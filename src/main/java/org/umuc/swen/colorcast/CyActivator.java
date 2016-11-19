@@ -1,9 +1,9 @@
 package org.umuc.swen.colorcast;
 
+import java.awt.Component;
 import java.util.Properties;
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -13,8 +13,7 @@ import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
 
 public class CyActivator extends AbstractCyActivator {
 
-  private BrewerPanelComponent brewerPanelComponent;
-  private ControlPanelAction controlPanelAction;
+  private ColorCastCyAction colorCastCyAction;
   private CySwingApplication swingApplicationService;
 
   private CyNetworkManager networkManager;
@@ -40,6 +39,10 @@ public class CyActivator extends AbstractCyActivator {
     return networkManager;
   }
 
+  private Component getRootComponent() {
+    return this.swingApplicationService.getJFrame();
+  }
+
   private void getServices(BundleContext bundleContext) {
     swingApplicationService = getService(bundleContext, CySwingApplication.class);
     networkViewManager = getService(bundleContext, CyNetworkViewManager.class);
@@ -47,10 +50,8 @@ public class CyActivator extends AbstractCyActivator {
   }
 
   private void registerServices(BundleContext bundleContext) {
-    brewerPanelComponent = new BrewerPanelComponent(colorBrewerMapperUtil);
-    controlPanelAction = new ControlPanelAction(swingApplicationService, brewerPanelComponent);
-    registerService(bundleContext, brewerPanelComponent, CytoPanelComponent.class, new Properties());
-    registerService(bundleContext, controlPanelAction, CyAction.class, new Properties());
+    colorCastCyAction = new ColorCastCyAction(getRootComponent(), colorBrewerMapperUtil);
+    registerService(bundleContext, colorCastCyAction, CyAction.class, new Properties());
   }
 }
 

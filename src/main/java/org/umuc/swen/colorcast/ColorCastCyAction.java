@@ -1,24 +1,30 @@
-package org.umuc.swen.colorcast.view.listener;
+package org.umuc.swen.colorcast;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
 import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
 
 /**
- * Created by cwancowicz on 9/24/16.
+ * Created by cwancowicz on 11/19/16.
  */
-public class ApplyBrewerScaleToNetworkListener implements ActionListener {
+public class ColorCastCyAction extends AbstractCyAction {
 
   private final ColorBrewerMapperUtil colorBrewerMapperUtil;
+  private final Component rootComponent;
 
-  public ApplyBrewerScaleToNetworkListener(ColorBrewerMapperUtil colorBrewerMapperUtil) {
+  public ColorCastCyAction(Component rootComponent, ColorBrewerMapperUtil colorBrewerMapperUtil) {
+    super(ColorBrewerPaletteChooser.Resources.APP_TITLE);
+    setPreferredMenu(ColorBrewerPaletteChooser.Resources.APP_MENU);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
+    this.rootComponent = rootComponent;
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    ColorBrewerPaletteChooser colorBrewerPaletteChooser = new ColorBrewerPaletteChooser(colorBrewerMapperUtil);
+    ColorBrewerPaletteChooser colorBrewerPaletteChooser = new ColorBrewerPaletteChooser(
+            this.rootComponent, this.colorBrewerMapperUtil);
     colorBrewerPaletteChooser.setVisible(true);
     if (colorBrewerPaletteChooser.getSelectedPalette().isPresent() &&
             colorBrewerPaletteChooser.getSelectedColumn().isPresent() &&
