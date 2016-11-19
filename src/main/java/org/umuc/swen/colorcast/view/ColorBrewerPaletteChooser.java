@@ -36,6 +36,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private final static String CANCEL = "Cancel";
   private final static String RESET = "Reset";
   private final static String COLUMN_LABEL = "Please select a data column below";
+  private final static String PREVIEW = "Preview";
 
   private final static int COLUMNS_LABEL_PANEL = 0;
   private final static int COLUMNS_INDEX = 1;
@@ -52,6 +53,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private ButtonGroup mappersButtonGroup;
   private DisableApplyColorSchemeListener listener;
   private JButton applyColorBrewerButton;
+  private JButton previewButton;
 
   private JPanel mainPanel = new JPanel();
   private JPanel buttonPanel;
@@ -89,10 +91,12 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   public void disableApplyColorBrewerButton() {
     this.applyColorBrewerButton.setEnabled(false);
+    this.previewButton.setEnabled(false);
   }
 
   public void enableApplyColorBrewerButton() {
     this.applyColorBrewerButton.setEnabled(true);
+    this.previewButton.setEnabled(true);
   }
 
   @Override
@@ -106,6 +110,10 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
       case APPLY_COLOR_PALLETE:
         setNewSelections();
         dispose();
+        break;
+      case PREVIEW:
+        setNewSelections();
+        applySelectionToNetworkForPreview();
         break;
       case RESET:
         clearSelections();
@@ -194,15 +202,19 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     applyColorBrewerButton = new JButton(APPLY_COLOR_PALLETE);
     JButton cancelButton = new JButton(CANCEL);
     JButton resetButton = new JButton(RESET);
+    previewButton = new JButton(PREVIEW);
 
     applyColorBrewerButton.setActionCommand(APPLY_COLOR_PALLETE);
     cancelButton.setActionCommand(CANCEL);
     resetButton.setActionCommand(RESET);
+    previewButton.setActionCommand(PREVIEW);
 
     applyColorBrewerButton.addActionListener(this);
     cancelButton.addActionListener(this);
     resetButton.addActionListener(this);
+    previewButton.addActionListener(this);
 
+    buttonPanel.add(previewButton);
     buttonPanel.add(resetButton);
     buttonPanel.add(cancelButton);
     buttonPanel.add(applyColorBrewerButton);
@@ -237,6 +249,12 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     } catch (UnsupportedLookAndFeelException e) {
       e.printStackTrace();
     }
+  }
+
+  private void applySelectionToNetworkForPreview() {
+    colorBrewerMapperUtil.applyFilterToNetworks(getSelectedColumn().get(),
+            getSelectedPalette().get(),
+            getSelectedMapType().get());
   }
 
   public class Resources {
