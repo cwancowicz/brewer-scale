@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.jcolorbrewer.ColorBrewer;
+import org.umuc.swen.colorcast.CyActivator;
 import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
 import org.umuc.swen.colorcast.model.exception.InvalidDataException;
 import org.umuc.swen.colorcast.model.exception.InvalidElement;
@@ -26,12 +27,12 @@ public class BrewerScaleMapperFactory {
    * @return {@link FilterMapper}
    */
   public static FilterMapper createFilterMapper(CyNetwork cyNetwork, String columnName,
-                                                ColorBrewer colorBrewer, MapType mapType) {
+                                                ColorBrewer colorBrewer, MapType mapType, CyActivator cyActivator) {
     switch (mapType) {
       case DISCRETE:
-        return createDiscreteFilterMapper(columnName, colorBrewer, cyNetwork);
+        return createDiscreteFilterMapper(columnName, colorBrewer, cyNetwork, cyActivator);
       case CONTINUOUS:
-        return createSequentialFilterMapper(columnName, colorBrewer, cyNetwork);
+        return createSequentialFilterMapper(columnName, colorBrewer, cyNetwork, cyActivator);
       case DIVERGING:
         return createDivergentFilterMapper(columnName, colorBrewer, cyNetwork);
       default:
@@ -40,21 +41,22 @@ public class BrewerScaleMapperFactory {
   }
 
   private static FilterMapper createDiscreteFilterMapper(String columnName, ColorBrewer colorBrewer,
-                                                         CyNetwork cyNetwork) {
+                                                         CyNetwork cyNetwork, CyActivator cyActivator) {
     Set<Object> values = cyNetwork.getDefaultNodeTable().getAllRows()
             .stream()
             .map(row -> row.get(columnName, Object.class))
             .collect(Collectors.toSet());
-    return new DiscreteBrewerScaleMapper(values, colorBrewer, columnName);
+    return new DiscreteBrewerScaleMapper(values, cyNetwork.getDefaultNodeTable().getColumn(columnName).getType(),
+            colorBrewer, columnName, cyActivator);
   }
 
   private static FilterMapper createSequentialFilterMapper(String columnName, ColorBrewer colorBrewer,
-                                                           CyNetwork cyNetwork) {
+                                                           CyNetwork cyNetwork, CyActivator cyActivator) {
     return new ContinuousBrewerScaleMapper(columnName, colorBrewer,
             cyNetwork.getDefaultNodeTable().getAllRows().stream()
                     .map(row -> row.get(columnName, Object.class))
                     .collect(Collectors.toList()),
-            cyNetwork.getDefaultNodeTable().getColumn(columnName).getType()
+            cyNetwork.getDefaultNodeTable().getColumn(columnName).getType(), cyActivator
     );
   }
 

@@ -8,7 +8,10 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.BasicVisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.CyActivator;
 import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
@@ -52,14 +55,14 @@ public class ColorBrewerMapperUtil {
    * @param mapType     {@link MapType}
    */
   public void applyFilterToNetwork(CyNetwork network, String columnName, ColorBrewer colorBrewer, MapType mapType) {
-    CyNetworkViewManager viewManager = cyActivator.getNetworkViewManager();
-    Collection<CyNetworkView> networkViews = viewManager.getNetworkViews(network);
-    FilterMapper mapper = BrewerScaleMapperFactory.createFilterMapper(network, columnName, colorBrewer, mapType);
+    Collection<CyNetworkView> networkViews = cyActivator.getNetworkViewManager().getNetworkViews(network);
+    FilterMapper mapper = BrewerScaleMapperFactory.createFilterMapper(network, columnName, colorBrewer, mapType, cyActivator);
+
     network.getDefaultNodeTable().getAllRows()
             .stream()
             .forEach(row -> mapper.applyFilterMapping(
                     networkViews, network.getNode(row.get(CyNetwork.SUID, Long.class)), row));
-    networkViews.stream().forEach(CyNetworkView::updateView);
+    mapper.updateNetworkViews(networkViews);
   }
 
   /**

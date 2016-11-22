@@ -27,9 +27,14 @@ public abstract class AbstractBrewerScaleMapper implements FilterMapper {
   public void applyFilterMapping(Collection<CyNetworkView> networkViews, CyNode node, CyRow row) {
     getColor(row).ifPresent(brewerColor -> {
       networkViews.stream()
-              .forEach(networkView -> networkView.getNodeView(node).setLockedValue(BasicVisualLexicon.NODE_FILL_COLOR,
-                      brewerColor));
+              .forEach(networkView -> networkView.getNodeView(node).setLockedValue(
+                      BasicVisualLexicon.NODE_FILL_COLOR, brewerColor));
     });
+  }
+
+  @Override
+  public void updateNetworkViews(Collection<CyNetworkView> networkViews) {
+    networkViews.stream().forEach(CyNetworkView::updateView);
   }
 
   protected abstract Optional<Color> getColor(CyRow row);
