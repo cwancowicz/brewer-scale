@@ -138,8 +138,8 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   private void setDefaultSelectionToSequentialMapper() {
     ((JRadioButton)((JPanel)mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
-    setColorPanel(new SequentialColorPalettePanel(), MapType.CONTINUOUS);
-    this.selectedMapType = Optional.of(MapType.CONTINUOUS);
+    setColorPanel(new SequentialColorPalettePanel(), MapType.SEQUENTIAL);
+    this.selectedMapType = Optional.of(MapType.SEQUENTIAL);
     this.selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
   }
 
@@ -167,11 +167,11 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     JRadioButton diverging = new JRadioButton("Diverging");
     JRadioButton qualitative = new JRadioButton("Qualitative");
 
-    sequential.addActionListener(new RadioButtonListener(this, MapType.CONTINUOUS, listener));
+    sequential.addActionListener(new RadioButtonListener(this, MapType.SEQUENTIAL, listener));
     diverging.addActionListener(new RadioButtonListener(this, MapType.DIVERGING, listener));
     qualitative.addActionListener(new RadioButtonListener(this, MapType.DISCRETE, listener));
 
-    sequential.setActionCommand(MapType.CONTINUOUS.name());
+    sequential.setActionCommand(MapType.SEQUENTIAL.name());
     diverging.setActionCommand(MapType.DIVERGING.name());
     qualitative.setActionCommand(MapType.DISCRETE.name());
 

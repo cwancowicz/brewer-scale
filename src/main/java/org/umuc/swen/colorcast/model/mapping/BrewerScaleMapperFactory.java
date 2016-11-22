@@ -10,6 +10,7 @@ import org.umuc.swen.colorcast.CyActivator;
 import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
 import org.umuc.swen.colorcast.model.exception.InvalidDataException;
 import org.umuc.swen.colorcast.model.exception.InvalidElement;
+import org.umuc.swen.colorcast.model.validation.ColorCastMapValidator;
 
 /**
  * Created by cwancowicz on 10/20/16.
@@ -31,10 +32,10 @@ public class BrewerScaleMapperFactory {
     switch (mapType) {
       case DISCRETE:
         return createDiscreteFilterMapper(columnName, colorBrewer, cyNetwork, cyActivator);
-      case CONTINUOUS:
+      case SEQUENTIAL:
         return createSequentialFilterMapper(columnName, colorBrewer, cyNetwork, cyActivator);
       case DIVERGING:
-        return createDivergentFilterMapper(columnName, colorBrewer, cyNetwork);
+        return createDivergentFilterMapper(columnName, colorBrewer, cyNetwork, cyActivator);
       default:
         throw new InternalError(String.format("Unsupported Map Type [%s]", mapType));
     }
@@ -42,6 +43,7 @@ public class BrewerScaleMapperFactory {
 
   private static FilterMapper createDiscreteFilterMapper(String columnName, ColorBrewer colorBrewer,
                                                          CyNetwork cyNetwork, CyActivator cyActivator) {
+    ColorCastMapValidator.validateDiscreteMapper(colorBrewer);
     Set<Object> values = cyNetwork.getDefaultNodeTable().getAllRows()
             .stream()
             .map(row -> row.get(columnName, Object.class))
@@ -52,7 +54,8 @@ public class BrewerScaleMapperFactory {
 
   private static FilterMapper createSequentialFilterMapper(String columnName, ColorBrewer colorBrewer,
                                                            CyNetwork cyNetwork, CyActivator cyActivator) {
-    return new ContinuousBrewerScaleMapper(columnName, colorBrewer,
+    ColorCastMapValidator.validateSequentialMapper(colorBrewer);
+    return new SequentialBrewerScaleMapper(columnName, colorBrewer,
             cyNetwork.getDefaultNodeTable().getAllRows().stream()
                     .map(row -> row.get(columnName, Object.class))
                     .collect(Collectors.toList()),
@@ -61,7 +64,8 @@ public class BrewerScaleMapperFactory {
   }
 
   private static FilterMapper createDivergentFilterMapper(String columnName, ColorBrewer colorBrewer,
-                                                          CyNetwork cyNetwork) {
+                                                          CyNetwork cyNetwork, CyActivator cyActivator) {
+    ColorCastMapValidator.validateDivergingMapper(colorBrewer);
     Class type = cyNetwork.getDefaultNodeTable().getColumn(columnName).getType();
     Double maxValue;
 
@@ -71,7 +75,7 @@ public class BrewerScaleMapperFactory {
       throw new InvalidBrewerColorMapper(MapType.DIVERGING, InvalidElement.INVALID_DATA_TYPE);
     }
 
-    return new DivergingBrewerScaleMapper(columnName, colorBrewer, maxValue, type);
+    return new DivergingBrewerScaleMapper(columnName, colorBrewer, maxValue, type, cyActivator);
   }
 
   private static <T extends Number> Double getMaxValue(Class<T> type, CyNetwork cyNetwork, String columnName) {

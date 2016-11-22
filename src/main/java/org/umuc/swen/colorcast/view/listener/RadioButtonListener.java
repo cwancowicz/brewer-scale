@@ -29,7 +29,7 @@ public class RadioButtonListener implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     AbstractColorChooserPanel abstractColorChooserPanel = null;
     switch (this.mapType) {
-      case CONTINUOUS:
+      case SEQUENTIAL:
         abstractColorChooserPanel = new SequentialColorPalettePanel();
         break;
       case DISCRETE:

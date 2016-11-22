@@ -27,7 +27,7 @@ import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
  * Created by cwancowicz on 10/28/16.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ContinuousBrewerScaleMapperTest {
+public class SequentialBrewerScaleMapperTest {
 
   private static final Random RANDOM = new Random();
   private String columnName = "testColumn";
@@ -61,7 +61,7 @@ public class ContinuousBrewerScaleMapperTest {
 //    when(row.get(columnName, type)).thenReturn(value);
 //    when(cyNetworkView.getNodeView(node)).thenReturn(view);
 //
-//    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
+//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
 //    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
 //
 //    verify(view).setLockedValue(any(), eq(colors[value - 1]));
@@ -79,7 +79,7 @@ public class ContinuousBrewerScaleMapperTest {
 //    when(row.get(columnName, type)).thenReturn(maxValue);
 //    when(cyNetworkView.getNodeView(node)).thenReturn(view);
 //
-//    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
+//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
 //    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
 //
 //    verify(view).setLockedValue(any(), eq(colors[colors.length - 1]));
@@ -97,7 +97,7 @@ public class ContinuousBrewerScaleMapperTest {
 //    when(row.get(columnName, type)).thenReturn(minValue);
 //    when(cyNetworkView.getNodeView(node)).thenReturn(view);
 //
-//    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
+//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
 //    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
 //
 //    verify(view).setLockedValue(any(), eq(colors[0]));
@@ -115,7 +115,7 @@ public class ContinuousBrewerScaleMapperTest {
 //    when(row.get(columnName, type)).thenReturn(minValue);
 //    when(cyNetworkView.getNodeView(node)).thenReturn(view);
 //
-//    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
+//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
 //    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
 //
 //    verify(view).setLockedValue(any(), eq(colors[0]));
@@ -133,7 +133,7 @@ public class ContinuousBrewerScaleMapperTest {
 //    when(row.get(columnName, type)).thenReturn(maxValue);
 //    when(cyNetworkView.getNodeView(node)).thenReturn(view);
 //
-//    ContinuousBrewerScaleMapper continuousMapper = new ContinuousBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
+//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
 //    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
 //
 //    verify(view).setLockedValue(any(), eq(colors[colors.length - 1]));
@@ -142,13 +142,13 @@ public class ContinuousBrewerScaleMapperTest {
 //  @Test
 //  public void shouldThrowExceptionWhenColorBrewerIsNotTypeSequential() {
 //    exception.expect(InvalidBrewerColorMapper.class);
-//    new ContinuousBrewerScaleMapper(columnName, ColorBrewer.Accent, Collections.emptyList(), Integer.class);
+//    new SequentialBrewerScaleMapper(columnName, ColorBrewer.Accent, Collections.emptyList(), Integer.class);
 //  }
 //
 //  @Test
 //  public void shouldReturnDivergingMapType() {
-//    assertEquals(MapType.CONTINUOUS,
-//            new ContinuousBrewerScaleMapper(
+//    assertEquals(MapType.SEQUENTIAL,
+//            new SequentialBrewerScaleMapper(
 //                    columnName, ColorBrewer.Blues, Arrays.asList(1), Integer.class).getMapType());
 //  }
 }

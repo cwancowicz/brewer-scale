@@ -15,7 +15,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -95,9 +94,9 @@ public class BrewerScaleMapperFactoryTest {
     when(cyColumn.getType()).thenReturn(type);
 
     FilterMapper mapper = BrewerScaleMapperFactory.createFilterMapper(cyNetwork, columnName,
-        ColorBrewer.BuGn, MapType.CONTINUOUS, cyActivator);
+        ColorBrewer.BuGn, MapType.SEQUENTIAL, cyActivator);
     assertNotNull(mapper);
-    assertEquals(MapType.CONTINUOUS, mapper.getMapType());
+    assertEquals(MapType.SEQUENTIAL, mapper.getMapType());
   }
 
   @Test

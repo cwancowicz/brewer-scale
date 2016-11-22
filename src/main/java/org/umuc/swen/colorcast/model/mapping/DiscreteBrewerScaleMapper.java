@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.Stack;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.CyActivator;
@@ -13,9 +12,9 @@ import org.umuc.swen.colorcast.CyActivator;
 /**
  * Created by cwancowicz on 10/14/16.
  */
-public class DiscreteBrewerScaleMapper<T> extends VisualStyleFilterMapper {
+public class DiscreteBrewerScaleMapper extends VisualStyleFilterMapper {
 
-  public DiscreteBrewerScaleMapper(final Set<T> values, Class<T> type, ColorBrewer colorBrewer, String columnName, CyActivator cyActivator) {
+  public DiscreteBrewerScaleMapper(final Set values, Class type, ColorBrewer colorBrewer, String columnName, CyActivator cyActivator) {
     super(cyActivator, columnName, type);
     createValueColorMap(values, colorBrewer);
   }
@@ -25,15 +24,15 @@ public class DiscreteBrewerScaleMapper<T> extends VisualStyleFilterMapper {
     return MapType.DISCRETE;
   }
 
-  private void createValueColorMap(Set<T> values, ColorBrewer colorBrewer) {
+  private void createValueColorMap(Set values, ColorBrewer colorBrewer) {
     Stack<Color> colors = new Stack();
     colors.addAll(Arrays.asList(colorBrewer.getColorPalette(values.size())));
-    values.stream().forEach(value -> ((DiscreteMapping) visualMappingFunction).putMapValue(value, colors.pop()));
+    values.stream().forEach(value -> ((DiscreteMapping)visualMappingFunction).putMapValue(value, colors.pop()));
   }
 
   @Override
-  public VisualMappingFunction createVisualMappingFunction() {
-    return cyActivator.getVmfFactoryDiscrete().createVisualMappingFunction(columnName, type,
+  public DiscreteMapping createVisualMappingFunction() {
+    return (DiscreteMapping) cyActivator.getVmfFactoryDiscrete().createVisualMappingFunction(columnName, type,
             BasicVisualLexicon.NODE_FILL_COLOR);
   }
 }

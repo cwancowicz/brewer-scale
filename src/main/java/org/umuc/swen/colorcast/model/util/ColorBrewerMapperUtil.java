@@ -8,10 +8,6 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.BasicVisualLexicon;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
-import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.CyActivator;
 import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
@@ -89,7 +85,7 @@ public class ColorBrewerMapperUtil {
     switch (mapType) {
       case DISCRETE:
         return isNumeric(cyColumn.getType()) || cyColumn.getType() == String.class;
-      case CONTINUOUS:
+      case SEQUENTIAL:
       case DIVERGING:
         return isNumeric(cyColumn.getType());
     }

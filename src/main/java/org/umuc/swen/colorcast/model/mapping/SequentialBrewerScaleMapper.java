@@ -13,11 +13,11 @@ import org.umuc.swen.colorcast.model.exception.InvalidDataException;
 /**
  * Created by cwancowicz on 9/29/16.
  */
-public class ContinuousBrewerScaleMapper<T extends Number> extends VisualStyleFilterMapper {
+public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFilterMapper {
 
   private static final int colorSize = 100;
 
-  public ContinuousBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, List<T> values, Class<T> type,
+  public SequentialBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, List<T> values, Class<T> type,
                                      CyActivator cyActivator) {
     super(cyActivator, columnName, type);
     setBoundaryRangeValues(colorBrewer, values);
@@ -31,7 +31,7 @@ public class ContinuousBrewerScaleMapper<T extends Number> extends VisualStyleFi
 
   @Override
   public MapType getMapType() {
-    return MapType.CONTINUOUS;
+    return MapType.SEQUENTIAL;
   }
 
   private void setBoundaryRangeValues(ColorBrewer colorBrewer, List<T> values) {
