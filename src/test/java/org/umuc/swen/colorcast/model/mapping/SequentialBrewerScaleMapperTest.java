@@ -1,27 +1,28 @@
 package org.umuc.swen.colorcast.model.mapping;
 
-import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.BasicVisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.jcolorbrewer.ColorBrewer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
+import org.umuc.swen.colorcast.CyActivator;
+import org.umuc.swen.colorcast.model.exception.InvalidDataException;
 
 /**
  * Created by cwancowicz on 10/28/16.
@@ -29,126 +30,53 @@ import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
 @RunWith(MockitoJUnitRunner.class)
 public class SequentialBrewerScaleMapperTest {
 
-  private static final Random RANDOM = new Random();
-  private String columnName = "testColumn";
+  private static final Random random = new Random();
+  private static final String columnName = "test";
 
   @Mock
-  private CyNetworkView cyNetworkView;
+  private CyActivator cyActivator;
   @Mock
-  private CyNode node;
+  private VisualMappingManager visualMappingManager;
   @Mock
-  private CyRow row;
-  @Mock
-  private View<CyNode> view;
-
+  private VisualMappingFunctionFactory visualMappingFunctionFactory;
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
-  @Test
-  public void finishMe() {
-
+  @Before
+  public void setUp() {
+    when(cyActivator.getVisualMappingManager()).thenReturn(visualMappingManager);
+    when(visualMappingManager.getCurrentVisualStyle()).thenReturn(mock(VisualStyle.class));
+    when(cyActivator.getVmfFactoryContinuous()).thenReturn(visualMappingFunctionFactory);
   }
 
-//  @Test
-//  public void shouldGetWeightedColor() {
-//    ColorBrewer colorBrewer = ColorBrewer.Blues;
-//    Color[] colors = colorBrewer.getColorPalette(100);
-//    Class type = Integer.class;
-//    int value = 72;
-//    List<Integer> values = Arrays.asList(value, RANDOM.nextInt(100), RANDOM.nextInt(100),
-//            RANDOM.nextInt(100), RANDOM.nextInt(100), 100, 0);
-//
-//    when(row.get(columnName, type)).thenReturn(value);
-//    when(cyNetworkView.getNodeView(node)).thenReturn(view);
-//
-//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
-//    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
-//
-//    verify(view).setLockedValue(any(), eq(colors[value - 1]));
-//  }
-//
-//  @Test
-//  public void shouldGetDarkestColorOnTheColorScale() {
-//    ColorBrewer colorBrewer = ColorBrewer.Blues;
-//    Color[] colors = colorBrewer.getColorPalette(100);
-//    Class type = Integer.class;
-//    Integer maxValue = 100;
-//    List<Integer> values = Arrays.asList(RANDOM.nextInt(100), RANDOM.nextInt(100),
-//            RANDOM.nextInt(100), RANDOM.nextInt(100), maxValue);
-//
-//    when(row.get(columnName, type)).thenReturn(maxValue);
-//    when(cyNetworkView.getNodeView(node)).thenReturn(view);
-//
-//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
-//    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
-//
-//    verify(view).setLockedValue(any(), eq(colors[colors.length - 1]));
-//  }
-//
-//  @Test
-//  public void shouldGetLightestColorOnTheColorScale() {
-//    ColorBrewer colorBrewer = ColorBrewer.Blues;
-//    Color[] colors = colorBrewer.getColorPalette(100);
-//    Class type = Double.class;
-//    List<Integer> values = Arrays.asList(RANDOM.nextInt(100), RANDOM.nextInt(100),
-//            RANDOM.nextInt(100), RANDOM.nextInt(100), 100);
-//    Double minValue = values.stream().min(Integer::compare).map(Integer::doubleValue).get();
-//
-//    when(row.get(columnName, type)).thenReturn(minValue);
-//    when(cyNetworkView.getNodeView(node)).thenReturn(view);
-//
-//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
-//    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
-//
-//    verify(view).setLockedValue(any(), eq(colors[0]));
-//  }
-//
-//  @Test
-//  public void shouldGetLightestColorOnTheColorScaleWithNegativeNumbers() {
-//    ColorBrewer colorBrewer = ColorBrewer.Blues;
-//    Color[] colors = colorBrewer.getColorPalette(100);
-//    Class type = Double.class;
-//    List<Integer> values = Arrays.asList(RANDOM.nextInt(100) * -1, RANDOM.nextInt(100),
-//            RANDOM.nextInt(100) * -1, RANDOM.nextInt(100), 100);
-//    Double minValue = values.stream().min(Integer::compare).map(Integer::doubleValue).get();
-//
-//    when(row.get(columnName, type)).thenReturn(minValue);
-//    when(cyNetworkView.getNodeView(node)).thenReturn(view);
-//
-//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Double.class);
-//    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
-//
-//    verify(view).setLockedValue(any(), eq(colors[0]));
-//  }
-//
-//  @Test
-//  public void shouldGetDarkestColorOnTheColorScaleWithNegativeNumbers() {
-//    ColorBrewer colorBrewer = ColorBrewer.Blues;
-//    Color[] colors = colorBrewer.getColorPalette(100);
-//    Class type = Integer.class;
-//    Integer maxValue = 100;
-//    List<Integer> values = Arrays.asList(RANDOM.nextInt(100), RANDOM.nextInt(100) * -1,
-//            RANDOM.nextInt(100), RANDOM.nextInt(100) * -1, maxValue);
-//
-//    when(row.get(columnName, type)).thenReturn(maxValue);
-//    when(cyNetworkView.getNodeView(node)).thenReturn(view);
-//
-//    SequentialBrewerScaleMapper continuousMapper = new SequentialBrewerScaleMapper(columnName, colorBrewer, values, Integer.class);
-//    continuousMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
-//
-//    verify(view).setLockedValue(any(), eq(colors[colors.length - 1]));
-//  }
-//
-//  @Test
-//  public void shouldThrowExceptionWhenColorBrewerIsNotTypeSequential() {
-//    exception.expect(InvalidBrewerColorMapper.class);
-//    new SequentialBrewerScaleMapper(columnName, ColorBrewer.Accent, Collections.emptyList(), Integer.class);
-//  }
-//
-//  @Test
-//  public void shouldReturnDivergingMapType() {
-//    assertEquals(MapType.SEQUENTIAL,
-//            new SequentialBrewerScaleMapper(
-//                    columnName, ColorBrewer.Blues, Arrays.asList(1), Integer.class).getMapType());
-//  }
+  @Test
+  public void shouldCreateContinuousMappingVisualMappingFunction() {
+    Class type = Integer.class;
+    when(visualMappingFunctionFactory.createVisualMappingFunction(columnName, type, BasicVisualLexicon.NODE_FILL_COLOR))
+            .thenReturn(mock(ContinuousMapping.class));
+    SequentialBrewerScaleMapper sequentialBrewerScalemapper = new SequentialBrewerScaleMapper(columnName, ColorBrewer.Blues,
+            type, Arrays.asList(random.nextInt(), random.nextInt(), random.nextInt()), cyActivator);
+    assertTrue(sequentialBrewerScalemapper.createVisualMappingFunction() instanceof ContinuousMapping);
+  }
+
+  @Test
+  public void shouldReturnSequentialMapType() {
+    Class type = Integer.class;
+    ContinuousMapping continuousMapping = mock(ContinuousMapping.class);
+    VisualMappingFunctionFactory vmfFactory = mock(VisualMappingFunctionFactory.class);
+    when(vmfFactory.createVisualMappingFunction(columnName, Integer.class, BasicVisualLexicon.NODE_FILL_COLOR))
+            .thenReturn(continuousMapping);
+    when(cyActivator.getVmfFactoryContinuous()).thenReturn(vmfFactory);
+    assertEquals(MapType.SEQUENTIAL, new SequentialBrewerScaleMapper(columnName, ColorBrewer.Blues,
+            type, Arrays.asList(random.nextInt(), random.nextInt(), random.nextInt()), cyActivator).getMapType());
+  }
+
+  @Test
+  @Ignore
+  public void shouldThrowExceptionWhenValuesIsEmpty() {
+    when(visualMappingFunctionFactory.createVisualMappingFunction(columnName, Integer.class, BasicVisualLexicon.NODE_FILL_COLOR))
+            .thenReturn(mock(ContinuousMapping.class));
+    exception.expect(InvalidDataException.class);
+    new SequentialBrewerScaleMapper(columnName, ColorBrewer.Accent, String.class, Arrays.asList("something"), cyActivator);
+  }
 }

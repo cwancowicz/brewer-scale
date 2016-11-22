@@ -23,7 +23,7 @@ public abstract class VisualStyleFilterMapper implements FilterMapper {
     this.cyActivator = cyActivator;
     this.columnName = columnName;
     this.type = type;
-    this.visualStyle = cyActivator.getVisualMappingManager().getCurrentVisualStyle();
+    this.visualStyle = this.cyActivator.getVisualMappingManager().getCurrentVisualStyle();
     this.visualMappingFunction = createVisualMappingFunction();
     this.visualStyle.addVisualMappingFunction(this.visualMappingFunction);
   }

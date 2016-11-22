@@ -1,15 +1,12 @@
 package org.umuc.swen.colorcast.model.mapping;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.CyActivator;
-import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
 import org.umuc.swen.colorcast.model.exception.InvalidDataException;
-import org.umuc.swen.colorcast.model.exception.InvalidElement;
 import org.umuc.swen.colorcast.model.validation.ColorCastMapValidator;
 
 /**
@@ -43,48 +40,48 @@ public class BrewerScaleMapperFactory {
 
   private static FilterMapper createDiscreteFilterMapper(String columnName, ColorBrewer colorBrewer,
                                                          CyNetwork cyNetwork, CyActivator cyActivator) {
-    ColorCastMapValidator.validateDiscreteMapper(colorBrewer);
-    Set<Object> values = cyNetwork.getDefaultNodeTable().getAllRows()
-            .stream()
-            .map(row -> row.get(columnName, Object.class))
-            .collect(Collectors.toSet());
-    return new DiscreteBrewerScaleMapper(values, cyNetwork.getDefaultNodeTable().getColumn(columnName).getType(),
-            colorBrewer, columnName, cyActivator);
+    Class type = getType(cyNetwork, columnName);
+    try {
+      ColorCastMapValidator.validateDiscreteMapper(colorBrewer, type);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidDataException(columnName);
+    }
+    return new DiscreteBrewerScaleMapper(columnName, colorBrewer, type, getValues(type, cyNetwork, columnName),
+            cyActivator);
   }
 
   private static FilterMapper createSequentialFilterMapper(String columnName, ColorBrewer colorBrewer,
                                                            CyNetwork cyNetwork, CyActivator cyActivator) {
-    ColorCastMapValidator.validateSequentialMapper(colorBrewer);
-    return new SequentialBrewerScaleMapper(columnName, colorBrewer,
-            cyNetwork.getDefaultNodeTable().getAllRows().stream()
-                    .map(row -> row.get(columnName, Object.class))
-                    .collect(Collectors.toList()),
-            cyNetwork.getDefaultNodeTable().getColumn(columnName).getType(), cyActivator
-    );
+    Class type = getType(cyNetwork, columnName);
+    try {
+      ColorCastMapValidator.validateSequentialMapper(colorBrewer, type);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidDataException(columnName);
+    }
+    return new SequentialBrewerScaleMapper(columnName, colorBrewer, type,
+            getValues(type, cyNetwork, columnName), cyActivator);
   }
 
   private static FilterMapper createDivergentFilterMapper(String columnName, ColorBrewer colorBrewer,
                                                           CyNetwork cyNetwork, CyActivator cyActivator) {
-    ColorCastMapValidator.validateDivergingMapper(colorBrewer);
-    Class type = cyNetwork.getDefaultNodeTable().getColumn(columnName).getType();
-    Double maxValue;
-
-    if (type.getSuperclass() == Number.class) {
-      maxValue = getMaxValue(type, cyNetwork, columnName);
-    } else {
-      throw new InvalidBrewerColorMapper(MapType.DIVERGING, InvalidElement.INVALID_DATA_TYPE);
+    Class type = getType(cyNetwork, columnName);
+    try {
+      ColorCastMapValidator.validateDivergingMapper(colorBrewer, type);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidDataException(columnName);
     }
-
-    return new DivergingBrewerScaleMapper(columnName, colorBrewer, maxValue, type, cyActivator);
+    return new DivergingBrewerScaleMapper(columnName, colorBrewer, type, getValues(type, cyNetwork, columnName), cyActivator);
   }
 
-  private static <T extends Number> Double getMaxValue(Class<T> type, CyNetwork cyNetwork, String columnName) {
-    CyRow cyRow = cyNetwork.getDefaultNodeTable().getAllRows()
+  private static <T> List<T> getValues(Class<T> type, CyNetwork network, String columnName) {
+    return network.getDefaultNodeTable().getAllRows()
             .stream()
             .filter(row -> Objects.nonNull(row.get(columnName, type)))
-            .max((row1, row2) -> Double.valueOf(Math.abs(row1.get(columnName, type).doubleValue()))
-                    .compareTo(Double.valueOf(Math.abs(row2.get(columnName, type).doubleValue()))))
-            .orElseThrow(() -> new InvalidDataException(columnName));
-    return Math.abs(cyRow.get(columnName, type).doubleValue());
+            .map(row -> row.get(columnName, type))
+            .collect(Collectors.toList());
+  }
+
+  private static Class getType(CyNetwork cyNetwork, String columnName) {
+    return cyNetwork.getDefaultNodeTable().getColumn(columnName).getType();
   }
 }

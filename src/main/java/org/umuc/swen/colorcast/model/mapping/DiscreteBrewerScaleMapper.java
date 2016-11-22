@@ -2,6 +2,8 @@ package org.umuc.swen.colorcast.model.mapping;
 
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
@@ -14,9 +16,10 @@ import org.umuc.swen.colorcast.CyActivator;
  */
 public class DiscreteBrewerScaleMapper extends VisualStyleFilterMapper {
 
-  public DiscreteBrewerScaleMapper(final Set values, Class type, ColorBrewer colorBrewer, String columnName, CyActivator cyActivator) {
+  public DiscreteBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, Class type, List values,
+                                   CyActivator cyActivator) {
     super(cyActivator, columnName, type);
-    createValueColorMap(values, colorBrewer);
+    createValueColorMap(new HashSet(values), colorBrewer);
   }
 
   @Override

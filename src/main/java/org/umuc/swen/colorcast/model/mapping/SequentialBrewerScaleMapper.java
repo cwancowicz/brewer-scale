@@ -17,7 +17,7 @@ public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFi
 
   private static final int colorSize = 100;
 
-  public SequentialBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, List<T> values, Class<T> type,
+  public SequentialBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, Class<T> type, List<T> values,
                                      CyActivator cyActivator) {
     super(cyActivator, columnName, type);
     setBoundaryRangeValues(colorBrewer, values);
