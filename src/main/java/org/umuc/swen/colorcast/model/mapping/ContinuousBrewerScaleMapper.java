@@ -37,12 +37,11 @@ public class ContinuousBrewerScaleMapper<T extends Number> extends VisualStyleFi
   private void setBoundaryRangeValues(ColorBrewer colorBrewer, List<T> values) {
     // get the min and max colors from the continuous palette
     Color[] colors = colorBrewer.getColorPalette(colorSize);
-    // Define and Set the points. Set the points one less than and one greater than so the equals condition
-    // will never hit.
-    ((ContinuousMapping) this.visualMappingFunction).addPoint(getMinValue(values) - 1,
-            new BoundaryRangeValues(colors[0], colors[0], colors[0]));
-    ((ContinuousMapping) this.visualMappingFunction).addPoint(getMaxValue(values) + 1,
-            new BoundaryRangeValues(colors[colorSize - 1], colors[colorSize - 1], colors[colorSize - 1]));
+    // Define and Set the points.
+    ((ContinuousMapping) this.visualMappingFunction).addPoint(getMinValue(values),
+            new BoundaryRangeValues(colors[0], colors[0], colors[1]));
+    ((ContinuousMapping) this.visualMappingFunction).addPoint(getMaxValue(values),
+            new BoundaryRangeValues(colors[colorSize - 2], colors[colorSize - 1], colors[colorSize - 1]));
   }
 
   private double getMaxValue(List<T> values) {

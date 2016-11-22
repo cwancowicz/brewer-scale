@@ -43,29 +43,33 @@ public class DiscreteBrewerScaleMapperTest {
   public ExpectedException exception = ExpectedException.none();
 
   @Test
-  public void shouldGetColorWhenMatchingValueFromSet() {
-    Set<String> values = new HashSet(Arrays.asList("v1", "v2", "v3"));
-    ColorBrewer colorBrewer = ColorBrewer.Accent;
+  public void finishMe() {
 
-    when(row.get(columnName, Object.class)).thenReturn("v1");
-    when(cyNetworkView.getNodeView(node)).thenReturn(view);
-    DiscreteBrewerScaleMapper discreteBrewerScaleMapper = new DiscreteBrewerScaleMapper(values, colorBrewer, columnName);
-
-    discreteBrewerScaleMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
-
-    // verify we are getting a color
-    verify(view).setLockedValue(any(), any(Color.class));
   }
-
-  @Test
-  public void shouldThrowExceptionWhenColorBrewerIsNotQualitativeType() {
-    exception.expect(InvalidBrewerColorMapper.class);
-    new DiscreteBrewerScaleMapper(Collections.emptySet(), ColorBrewer.Blues, columnName);
-  }
-
-  @Test
-  public void shouldReturnDiscreteMapType() {
-    assertEquals(MapType.DISCRETE,
-            new DiscreteBrewerScaleMapper(Collections.emptySet(), ColorBrewer.Accent, columnName).getMapType());
-  }
+//  @Test
+//  public void shouldGetColorWhenMatchingValueFromSet() {
+//    Set<String> values = new HashSet(Arrays.asList("v1", "v2", "v3"));
+//    ColorBrewer colorBrewer = ColorBrewer.Accent;
+//
+//    when(row.get(columnName, Object.class)).thenReturn("v1");
+//    when(cyNetworkView.getNodeView(node)).thenReturn(view);
+//    DiscreteBrewerScaleMapper discreteBrewerScaleMapper = new DiscreteBrewerScaleMapper(values, colorBrewer, columnName);
+//
+//    discreteBrewerScaleMapper.applyFilterMapping(Arrays.asList(cyNetworkView), node, row);
+//
+//    // verify we are getting a color
+//    verify(view).setLockedValue(any(), any(Color.class));
+//  }
+//
+//  @Test
+//  public void shouldThrowExceptionWhenColorBrewerIsNotQualitativeType() {
+//    exception.expect(InvalidBrewerColorMapper.class);
+//    new DiscreteBrewerScaleMapper(Collections.emptySet(), ColorBrewer.Blues, columnName);
+//  }
+//
+//  @Test
+//  public void shouldReturnDiscreteMapType() {
+//    assertEquals(MapType.DISCRETE,
+//            new DiscreteBrewerScaleMapper(Collections.emptySet(), ColorBrewer.Accent, columnName).getMapType());
+//  }
 }
