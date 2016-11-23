@@ -2,6 +2,7 @@ package org.umuc.swen.colorcast.model.mapping;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
@@ -15,28 +16,15 @@ import org.umuc.swen.colorcast.model.exception.InvalidDataException;
  */
 public class DivergingBrewerScaleMapper<T extends Number> extends VisualStyleFilterMapper {
 
-  private final Double maxValue;
-  private final Integer colorScale;
-
   public DivergingBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, Class<T> type, List<T> values,
                                     CyActivator cyActivator) {
     super(cyActivator, columnName, type);
-    this.maxValue = getMaxValue(values);
-    this.colorScale = 100;
-    initializeBoundaryRanges(colorBrewer);
+    initializeBoundaryRanges(colorBrewer, values);
   }
 
   @Override
   public MapType getMapType() {
     return MapType.DIVERGING;
-  }
-
-  private void initializeBoundaryRanges(ColorBrewer colorBrewer) {
-    // create a color scale with 100 "negative colors" 1 color for zero and 100 "positive colors"
-    Color[] colors = colorBrewer.getColorPalette((colorScale * 2) + 1);
-    ((ContinuousMapping) visualMappingFunction).addPoint(maxValue * -1, new BoundaryRangeValues(colors[0], colors[0], colors[1]));
-    ((ContinuousMapping) visualMappingFunction).addPoint(0, new BoundaryRangeValues(colors[colorScale], colors[colorScale], colors[colorScale]));
-    ((ContinuousMapping) visualMappingFunction).addPoint(maxValue, new BoundaryRangeValues(colors[colors.length-2], colors[colors.length-1], colors[colors.length-1]));
   }
 
   @Override
@@ -45,10 +33,36 @@ public class DivergingBrewerScaleMapper<T extends Number> extends VisualStyleFil
             type, BasicVisualLexicon.NODE_FILL_COLOR);
   }
 
+  private void initializeBoundaryRanges(ColorBrewer colorBrewer, List values) {
+    double maxValue = getMaxValue(values);
+    int maxColorSize = getMaxColorSize(colorBrewer);
+    int halfMaxColorSize = maxColorSize / 2;
+    Color[] colors = colorBrewer.getColorPalette(maxColorSize);
+
+    double intervalSize = (maxValue / halfMaxColorSize);
+
+    // Create a range that starts from negative Half Color Size to positive Half Color Size
+    IntStream.rangeClosed(-1 * halfMaxColorSize, halfMaxColorSize).forEach(
+            itr -> {
+              Color color = colors[itr + halfMaxColorSize];
+              ((ContinuousMapping) visualMappingFunction)
+                      .addPoint(itr * intervalSize, new BoundaryRangeValues(color, color, color));
+            }
+    );
+  }
+
   private Double getMaxValue(List<T> values) {
-  return values.stream()
-            .max((row1, row2) -> Double.valueOf(Math.abs(row1.doubleValue()))
-                    .compareTo(Double.valueOf(Math.abs(row2.doubleValue()))))
-            .orElseThrow(() -> new InvalidDataException(columnName)).doubleValue();
+    return values.stream()
+            .map(value -> Double.valueOf(Math.abs(value.doubleValue())))
+            .max((v1, v2) -> v1.compareTo(v2))
+            .orElseThrow(() -> new InvalidDataException(columnName));
+  }
+
+  private int getMaxColorSize(ColorBrewer colorBrewer) {
+    // make max color size odd number of colors if it is even
+    if (colorBrewer.getMaximumColorCount() % 2 == 0) {
+      return colorBrewer.getMaximumColorCount() + 1;
+    }
+    return colorBrewer.getMaximumColorCount();
   }
 }
