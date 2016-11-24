@@ -3,6 +3,7 @@ package org.umuc.swen.colorcast.model.mapping;
 import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -15,8 +16,6 @@ import org.umuc.swen.colorcast.model.exception.InvalidDataException;
  */
 public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFilterMapper {
 
-  private static final int colorSize = 100;
-
   public SequentialBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, Class<T> type, List<T> values,
                                      CyActivator cyActivator) {
     super(cyActivator, columnName, type);
@@ -26,7 +25,7 @@ public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFi
   @Override
   public ContinuousMapping createVisualMappingFunction() {
     return (ContinuousMapping) this.cyActivator.getVmfFactoryContinuous().createVisualMappingFunction(columnName, type,
-              BasicVisualLexicon.NODE_FILL_COLOR);
+            BasicVisualLexicon.NODE_FILL_COLOR);
   }
 
   @Override
@@ -35,13 +34,18 @@ public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFi
   }
 
   private void setBoundaryRangeValues(ColorBrewer colorBrewer, List<T> values) {
-    // get the min and max colors from the continuous palette
-    Color[] colors = colorBrewer.getColorPalette(colorSize);
-    // Define and Set the points.
-    ((ContinuousMapping) this.visualMappingFunction).addPoint(getMinValue(values),
-            new BoundaryRangeValues(colors[0], colors[0], colors[1]));
-    ((ContinuousMapping) this.visualMappingFunction).addPoint(getMaxValue(values),
-            new BoundaryRangeValues(colors[colorSize - 2], colors[colorSize - 1], colors[colorSize - 1]));
+    int maxColorSize = getMaxColorSize(colorBrewer);
+    // need an extra color to have points for the most min and most max values.
+    Color[] colors = colorBrewer.getColorPalette(maxColorSize + 1);
+
+    double minValue = getMinValue(values);
+    double maxValue = getMaxValue(values);
+    double intervalSize = (maxValue - minValue) / maxColorSize;
+
+    IntStream.rangeClosed(0, maxColorSize).forEach(itr ->
+            ((ContinuousMapping) this.visualMappingFunction).addPoint(minValue + (intervalSize * itr),
+                    new BoundaryRangeValues(colors[itr], colors[itr], colors[itr]))
+    );
   }
 
   private double getMaxValue(List<T> values) {
@@ -58,5 +62,9 @@ public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFi
             .map(value -> Double.valueOf(value.doubleValue()))
             .min((d1, d2) -> d1.compareTo(d2))
             .orElseThrow(() -> new InvalidDataException(columnName));
+  }
+
+  private int getMaxColorSize(ColorBrewer colorBrewer) {
+    return colorBrewer.getMaximumColorCount() - 1;
   }
 }

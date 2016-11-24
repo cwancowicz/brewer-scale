@@ -1,7 +1,7 @@
 package org.umuc.swen.colorcast.model.mapping;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
@@ -17,8 +17,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.umuc.swen.colorcast.CyActivator;
@@ -78,5 +81,20 @@ public class SequentialBrewerScaleMapperTest {
             .thenReturn(mock(ContinuousMapping.class));
     exception.expect(InvalidDataException.class);
     new SequentialBrewerScaleMapper(columnName, ColorBrewer.Accent, String.class, Arrays.asList("something"), cyActivator);
+  }
+
+  @Test
+  public void shouldCreateBoundaryRangeValues() {
+    Class type = Integer.class;
+    ContinuousMapping continuousMapping = mock(ContinuousMapping.class);
+    VisualMappingFunctionFactory vmfFactory = mock(VisualMappingFunctionFactory.class);
+    when(vmfFactory.createVisualMappingFunction(columnName, Integer.class, BasicVisualLexicon.NODE_FILL_COLOR))
+            .thenReturn(continuousMapping);
+    when(cyActivator.getVmfFactoryContinuous()).thenReturn(vmfFactory);
+    ColorBrewer colorBrewer = ColorBrewer.Blues;
+    List<Integer> values = Arrays.asList(random.nextInt(), random.nextInt(), random.nextInt());
+    SequentialBrewerScaleMapper mapper = new SequentialBrewerScaleMapper(columnName, colorBrewer,
+            type, values, cyActivator);
+    verify(continuousMapping, times(colorBrewer.getMaximumColorCount())).addPoint(any(), any());
   }
 }
