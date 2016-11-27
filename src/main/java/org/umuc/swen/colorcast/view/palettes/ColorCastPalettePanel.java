@@ -97,7 +97,7 @@ public abstract class ColorCastPalettePanel extends AbstractColorChooserPanel im
 
   private List<ColorBrewer> getColorBrewerPalettes(MapType mapType, boolean colorBlind) {
     switch (mapType) {
-      case CONTINUOUS:
+      case SEQUENTIAL:
         return Arrays.asList(ColorBrewer.getSequentialColorPalettes(colorBlind));
       case DIVERGING:
         return Arrays.asList(ColorBrewer.getDivergingColorPalettes(colorBlind));

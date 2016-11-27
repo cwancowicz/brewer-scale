@@ -13,6 +13,6 @@ public class MySequentialColorPalettePanel extends ColorCastPalettePanel {
 
   @Override
   public MapType getMapType() {
-    return MapType.CONTINUOUS;
+    return MapType.SEQUENTIAL;
   }
 }
