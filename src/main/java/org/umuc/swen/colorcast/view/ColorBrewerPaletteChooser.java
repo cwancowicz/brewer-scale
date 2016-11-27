@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -23,6 +25,7 @@ import org.umuc.swen.colorcast.model.mapping.MapType;
 import org.umuc.swen.colorcast.view.listener.ColumnSelectionListener;
 import org.umuc.swen.colorcast.view.listener.DisableApplyColorSchemeListener;
 import org.umuc.swen.colorcast.view.listener.ColorChangeListener;
+import org.umuc.swen.colorcast.view.palettes.ColorCastPalettePanel;
 import org.umuc.swen.colorcast.view.palettes.MySequentialColorPalettePanel;
 
 /**
@@ -135,6 +138,9 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   private void setDefaultSelectionToSequentialMapper() {
     ((JRadioButton)((JPanel)mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
+    // remove all panels and preview panels
+    colorPanel.setPreviewPanel(new JPanel());
+    colorPanel.setChooserPanels(new AbstractColorChooserPanel[]{});
     setColorPanel(new MySequentialColorPalettePanel(), MapType.CONTINUOUS);
     this.selectedMapType = Optional.of(MapType.CONTINUOUS);
     this.selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
@@ -210,6 +216,10 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private void clearSelections() {
     selectedColorBrewer = Optional.empty();
     ((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).setColorBrewer(null);
+    if (Objects.nonNull(colorPanel.getChooserPanels())) {
+      Arrays.asList(colorPanel.getChooserPanels()).stream().filter(Objects::nonNull)
+              .forEach(panel -> ((ColorCastPalettePanel) panel).deselectAllPalettes());
+    }
     selectedColumnName = Optional.empty();
     columnsComboBox.setSelectedItem(null);
     disableApplyColorBrewerButton();

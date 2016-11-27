@@ -26,6 +26,7 @@ import org.umuc.swen.colorcast.model.mapping.MapType;
 public abstract class ColorCastPalettePanel extends AbstractColorChooserPanel implements ActionListener {
 
   private static final Color DARK_BLUE = new Color(11, 55, 127);
+  private ButtonGroup boxOfPalettes = new ButtonGroup();
 
   public abstract MapType getMapType();
 
@@ -47,7 +48,6 @@ public abstract class ColorCastPalettePanel extends AbstractColorChooserPanel im
   protected void buildChooser() {
     setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
 
-    ButtonGroup boxOfPalettes = new ButtonGroup();
     Border border = BorderFactory.createMatteBorder(2, 2, 2, 2, DARK_BLUE);
     getColorBrewerPalettes(getMapType(), false).stream()
             .forEach(palette -> {
@@ -64,6 +64,13 @@ public abstract class ColorCastPalettePanel extends AbstractColorChooserPanel im
     String command = ((JToggleButton) e.getSource()).getActionCommand();
     ((ColorPanelSelectionModel) model).setColorBrewer(
             getSelectedColorBrewer(getColorBrewerPalettes(getMapType(), false), command));
+  }
+
+  /**
+   * Unselects any and all Palettes previously selected.
+   */
+  public void deselectAllPalettes() {
+    boxOfPalettes.clearSelection();
   }
 
   protected JToggleButton createPalette(ColorBrewer brewer, Border normalBorder) {
