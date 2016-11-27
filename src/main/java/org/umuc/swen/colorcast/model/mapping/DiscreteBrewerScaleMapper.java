@@ -2,39 +2,24 @@ package org.umuc.swen.colorcast.model.mapping;
 
 import java.awt.Color;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.cytoscape.model.CyRow;
+import org.cytoscape.view.presentation.property.BasicVisualLexicon;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.jcolorbrewer.ColorBrewer;
-import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
-import org.umuc.swen.colorcast.model.exception.InvalidElement;
+import org.umuc.swen.colorcast.CyActivator;
 
 /**
  * Created by cwancowicz on 10/14/16.
  */
-public class DiscreteBrewerScaleMapper<T> extends AbstractBrewerScaleMapper {
+public class DiscreteBrewerScaleMapper extends VisualStyleFilterMapper {
 
-  private Map<T, Color> valueColorMap = null;
-
-  public DiscreteBrewerScaleMapper(final Set<T> values, ColorBrewer colorBrewer, String columnName) {
-    super(colorBrewer, columnName);
-    createValueColorMap(values, colorBrewer);
-  }
-
-  @Override
-  protected Optional<Color> getColor(CyRow row) {
-    return Optional.ofNullable(valueColorMap.get(row.get(this.columnName, Object.class)));
-  }
-
-  @Override
-  protected void validateColorBrewer(ColorBrewer colorBrewer) {
-    if (!Arrays.asList(ColorBrewer.getQualitativeColorPalettes(false)).contains(colorBrewer)) {
-      throw new InvalidBrewerColorMapper(getMapType(), InvalidElement.EXPECTED_QUALITATIVE_PALETTE);
-    }
+  public DiscreteBrewerScaleMapper(String columnName, ColorBrewer colorBrewer, Class type, List values,
+                                   CyActivator cyActivator) {
+    super(cyActivator, columnName, type);
+    createValueColorMap(new HashSet(values), colorBrewer);
   }
 
   @Override
@@ -42,9 +27,15 @@ public class DiscreteBrewerScaleMapper<T> extends AbstractBrewerScaleMapper {
     return MapType.DISCRETE;
   }
 
-  private void createValueColorMap(Set<T> values, ColorBrewer colorBrewer) {
+  private void createValueColorMap(Set values, ColorBrewer colorBrewer) {
     Stack<Color> colors = new Stack();
     colors.addAll(Arrays.asList(colorBrewer.getColorPalette(values.size())));
-    valueColorMap = values.stream().collect(Collectors.toMap(Function.identity(), value -> colors.pop()));
+    values.stream().forEach(value -> ((DiscreteMapping)visualMappingFunction).putMapValue(value, colors.pop()));
+  }
+
+  @Override
+  public DiscreteMapping createVisualMappingFunction() {
+    return (DiscreteMapping) cyActivator.getVmfFactoryDiscrete().createVisualMappingFunction(columnName, type,
+            BasicVisualLexicon.NODE_FILL_COLOR);
   }
 }
