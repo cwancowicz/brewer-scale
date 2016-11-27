@@ -8,7 +8,6 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.CyActivator;
 import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
@@ -52,14 +51,14 @@ public class ColorBrewerMapperUtil {
    * @param mapType     {@link MapType}
    */
   public void applyFilterToNetwork(CyNetwork network, String columnName, ColorBrewer colorBrewer, MapType mapType) {
-    CyNetworkViewManager viewManager = cyActivator.getNetworkViewManager();
-    Collection<CyNetworkView> networkViews = viewManager.getNetworkViews(network);
-    FilterMapper mapper = BrewerScaleMapperFactory.createFilterMapper(network, columnName, colorBrewer, mapType);
+    Collection<CyNetworkView> networkViews = cyActivator.getNetworkViewManager().getNetworkViews(network);
+    FilterMapper mapper = BrewerScaleMapperFactory.createFilterMapper(network, columnName, colorBrewer, mapType, cyActivator);
+
     network.getDefaultNodeTable().getAllRows()
             .stream()
             .forEach(row -> mapper.applyFilterMapping(
                     networkViews, network.getNode(row.get(CyNetwork.SUID, Long.class)), row));
-    networkViews.stream().forEach(CyNetworkView::updateView);
+    mapper.updateNetworkViews(networkViews);
   }
 
   /**
@@ -86,7 +85,7 @@ public class ColorBrewerMapperUtil {
     switch (mapType) {
       case DISCRETE:
         return isNumeric(cyColumn.getType()) || cyColumn.getType() == String.class;
-      case CONTINUOUS:
+      case SEQUENTIAL:
       case DIVERGING:
         return isNumeric(cyColumn.getType());
     }

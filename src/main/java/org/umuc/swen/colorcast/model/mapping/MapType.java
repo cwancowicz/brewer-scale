@@ -4,7 +4,7 @@ package org.umuc.swen.colorcast.model.mapping;
  * Created by cwancowicz on 10/16/16.
  */
 public enum MapType {
-  DISCRETE(2, "Discrete Mapper"), CONTINUOUS(3, "Continuous Mapper"), DIVERGING(1, "Diverging Mapper");
+  DISCRETE(2, "Discrete Mapper"), SEQUENTIAL(3, "Continuous Mapper"), DIVERGING(1, "Diverging Mapper");
 
   private String mapName;
   private int paletteType;
