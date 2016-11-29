@@ -29,7 +29,7 @@ import org.umuc.swen.colorcast.view.listener.ColorChangeListener;
  */
 public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeListener, ActionListener {
 
-  private final static String APPLY_COLOR_PALLETE = "Apply Color Palette";
+  private final static String APPLY_COLOR_PALLETE = "Apply";
   private final static String CANCEL = "Cancel";
   private final static String RESET = "Reset";
   private final static String COLUMN_LABEL = "Please select a data column below";
