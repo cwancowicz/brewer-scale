@@ -29,7 +29,7 @@ import org.umuc.swen.colorcast.view.listener.ColorChangeListener;
  */
 public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeListener, ActionListener {
 
-  private final static String APPLY_COLOR_PALLETE = "Apply Color Palette";
+  private final static String APPLY_COLOR_PALETTE = "Apply Color Palette";
   private final static String CANCEL = "Cancel";
   private final static String RESET = "Reset";
   private final static String COLUMN_LABEL = "Please select a data column below";
@@ -100,7 +100,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   @Override
   public void actionPerformed(ActionEvent e) {
     switch (e.getActionCommand()) {
-      case APPLY_COLOR_PALLETE:
+      case APPLY_COLOR_PALETTE:
         setNewSelections();
         dispose();
         break;
@@ -187,11 +187,11 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     buttonPanel = new JPanel();
     buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-    applyColorBrewerButton = new JButton(APPLY_COLOR_PALLETE);
+    applyColorBrewerButton = new JButton(APPLY_COLOR_PALETTE);
     JButton cancelButton = new JButton(CANCEL);
     JButton resetButton = new JButton(RESET);
 
-    applyColorBrewerButton.setActionCommand(APPLY_COLOR_PALLETE);
+    applyColorBrewerButton.setActionCommand(APPLY_COLOR_PALETTE);
     cancelButton.setActionCommand(CANCEL);
     resetButton.setActionCommand(RESET);
 
