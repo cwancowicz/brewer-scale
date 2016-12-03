@@ -7,6 +7,8 @@ import org.umuc.swen.colorcast.view.listener.AboutColorCastListener;
 import org.umuc.swen.colorcast.view.listener.ApplyBrewerScaleToNetworkListener;
 
 /**
+ * Main {@link JPanel} for holding Color Cast components such as the Apply Color Cast Button and About page.
+ *
  * Created by cwancowicz on 9/22/16.
  */
 public class BrewerScaleMainPanel extends JPanel {

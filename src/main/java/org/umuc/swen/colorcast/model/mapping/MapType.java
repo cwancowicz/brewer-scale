@@ -1,6 +1,8 @@
 package org.umuc.swen.colorcast.model.mapping;
 
 /**
+ * Supported Map Types
+ *
  * Created by cwancowicz on 10/16/16.
  */
 public enum MapType {

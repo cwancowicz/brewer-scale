@@ -25,6 +25,9 @@ import org.umuc.swen.colorcast.view.listener.DisableApplyColorSchemeListener;
 import org.umuc.swen.colorcast.view.listener.ColorChangeListener;
 
 /**
+ * Main Color Cast Palette Dialog. This class generates a UI Dialog from which a user can select a color palette,
+ * mapping type, and Cytoscape column.
+ *
  * Created by cwancowicz on 11/1/16.
  */
 public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeListener, ActionListener {

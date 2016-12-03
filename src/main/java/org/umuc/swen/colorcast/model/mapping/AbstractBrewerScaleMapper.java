@@ -10,6 +10,8 @@ import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.jcolorbrewer.ColorBrewer;
 
 /**
+ * Abstract {@link FilterMapper} Color Brewer Mappings should extend from.
+ *
  * Created by cwancowicz on 10/15/16.
  */
 public abstract class AbstractBrewerScaleMapper implements FilterMapper {

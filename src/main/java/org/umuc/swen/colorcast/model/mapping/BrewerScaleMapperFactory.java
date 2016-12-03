@@ -11,6 +11,8 @@ import org.umuc.swen.colorcast.model.exception.InvalidDataException;
 import org.umuc.swen.colorcast.model.exception.InvalidElement;
 
 /**
+ * Factory class for generating {@link FilterMapper} classes.
+ *
  * Created by cwancowicz on 10/20/16.
  */
 public class BrewerScaleMapperFactory {

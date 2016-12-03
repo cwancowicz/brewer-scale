@@ -8,7 +8,11 @@ import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
 import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
 
-
+/**
+ * Action to be performed by Cytoscape when app starts.
+ *
+ * Created by cwancowicz
+ */
 public class ControlPanelAction extends AbstractCyAction {
 
   private static final long serialVersionUID = 1L;

@@ -12,6 +12,8 @@ import org.umuc.swen.colorcast.model.exception.InvalidDataException;
 import org.umuc.swen.colorcast.model.exception.InvalidElement;
 
 /**
+ * {@link FilterMapper} that maps a Sequential Color Scheme to nodes.
+ *
  * Created by cwancowicz on 9/29/16.
  */
 public class ContinuousBrewerScaleMapper<T extends Number> extends AbstractBrewerScaleMapper {

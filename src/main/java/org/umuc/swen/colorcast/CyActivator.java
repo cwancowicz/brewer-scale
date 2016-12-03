@@ -10,7 +10,11 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.osgi.framework.BundleContext;
 import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
 
-
+/**
+ * Main class that instantiates the Utility class and starts and registers necessary Cytoscape services
+ *
+ * Created by cwancowicz
+ */
 public class CyActivator extends AbstractCyActivator {
 
   private BrewerPanelComponent brewerPanelComponent;

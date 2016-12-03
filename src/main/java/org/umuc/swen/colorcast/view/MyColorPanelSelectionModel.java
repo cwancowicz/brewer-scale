@@ -6,13 +6,12 @@ import org.umuc.swen.colorcast.view.listener.DisableApplyColorSchemeListener;
 import org.umuc.swen.colorcast.view.listener.ColorChangeListener;
 
 /**
+ * {@link ColorPanelSelectionModel}
+ *
  * Created by cwancowicz on 11/3/16.
  */
 public class MyColorPanelSelectionModel extends ColorPanelSelectionModel {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 1L;
   private ColorBrewer brewer;
   private DisableApplyColorSchemeListener listener;

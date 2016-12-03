@@ -12,6 +12,8 @@ import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
 import org.umuc.swen.colorcast.model.exception.InvalidElement;
 
 /**
+ * {@link FilterMapper} that maps a Diverging Color Scheme to nodes.
+ *
  * Created by cwancowicz on 10/17/16.
  */
 public class DivergingBrewerScaleMapper<T extends Number> extends AbstractBrewerScaleMapper {

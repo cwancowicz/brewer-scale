@@ -18,6 +18,8 @@ import org.umuc.swen.colorcast.model.mapping.FilterMapper;
 import org.umuc.swen.colorcast.model.mapping.MapType;
 
 /**
+ * Utility class for managing and applying Color Mappings to {@link CyNetworkView} and {@link org.cytoscape.model.CyNode}
+ *
  * Created by cwancowicz on 9/24/16.
  */
 public class ColorBrewerMapperUtil {

@@ -8,6 +8,11 @@ import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
 import org.umuc.swen.colorcast.view.BrewerScaleMainPanel;
 import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
 
+/**
+ * Main Component to hold Color Cast Panel.
+ *
+ * Created by cwancowicz
+ */
 public class BrewerPanelComponent implements CytoPanelComponent {
 
   private final BrewerScaleMainPanel brewerScaleMainPanel;

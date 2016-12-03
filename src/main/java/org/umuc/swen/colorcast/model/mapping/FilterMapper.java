@@ -6,6 +6,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.view.model.CyNetworkView;
 
 /**
+ * Interface for applying a map type to {@link CyNetworkView}
+ *
  * Created by cwancowicz on 9/24/16.
  */
 public interface FilterMapper {

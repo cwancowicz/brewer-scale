@@ -14,6 +14,8 @@ import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
 import org.umuc.swen.colorcast.model.exception.InvalidElement;
 
 /**
+ * {@link FilterMapper} that maps a Discrete Color Scheme to nodes.
+ *
  * Created by cwancowicz on 10/14/16.
  */
 public class DiscreteBrewerScaleMapper<T> extends AbstractBrewerScaleMapper {
