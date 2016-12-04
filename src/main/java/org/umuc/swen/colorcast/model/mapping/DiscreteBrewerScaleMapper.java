@@ -30,7 +30,7 @@ public class DiscreteBrewerScaleMapper extends VisualStyleFilterMapper {
   private void createValueColorMap(Set values, ColorBrewer colorBrewer) {
     Stack<Color> colors = new Stack();
     colors.addAll(Arrays.asList(colorBrewer.getColorPalette(values.size())));
-    values.stream().forEach(value -> ((DiscreteMapping)visualMappingFunction).putMapValue(value, colors.pop()));
+    values.stream().forEach(value -> ((DiscreteMapping) getVisualMappingFunction()).putMapValue(value, colors.pop()));
   }
 
   @Override

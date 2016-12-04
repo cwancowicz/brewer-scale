@@ -45,7 +45,7 @@ public class DivergingBrewerScaleMapper<T extends Number> extends VisualStyleFil
     IntStream.rangeClosed(-1 * halfMaxColorSize, halfMaxColorSize).forEach(
             itr -> {
               Color color = colors[itr + halfMaxColorSize];
-              ((ContinuousMapping) visualMappingFunction)
+              ((ContinuousMapping) getVisualMappingFunction())
                       .addPoint(itr * intervalSize, new BoundaryRangeValues(color, color, color));
             }
     );

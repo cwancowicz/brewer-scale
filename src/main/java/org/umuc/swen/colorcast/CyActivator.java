@@ -16,7 +16,7 @@ import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
 
 public class CyActivator extends AbstractCyActivator {
 
-  final private ColorBrewerMapperUtil colorBrewerMapperUtil;
+  private ColorBrewerMapperUtil colorBrewerMapperUtil;
 
   private ColorCastCyAction colorCastCyAction;
   private CySwingApplication swingApplicationService;
@@ -30,11 +30,11 @@ public class CyActivator extends AbstractCyActivator {
 
   public CyActivator() {
     super();
-    colorBrewerMapperUtil = new ColorBrewerMapperUtil(this);
   }
 
   public void start(BundleContext bundleContext) {
     getServices(bundleContext);
+    colorBrewerMapperUtil = new ColorBrewerMapperUtil(this);
     registerServices(bundleContext);
   }
 

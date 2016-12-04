@@ -8,6 +8,7 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.CyActivator;
 import org.umuc.swen.colorcast.model.exception.InvalidBrewerColorMapper;
@@ -15,6 +16,7 @@ import org.umuc.swen.colorcast.model.exception.InvalidElement;
 import org.umuc.swen.colorcast.model.mapping.BrewerScaleMapperFactory;
 import org.umuc.swen.colorcast.model.mapping.FilterMapper;
 import org.umuc.swen.colorcast.model.mapping.MapType;
+import org.umuc.swen.colorcast.model.mapping.PreviousVisualStyleMapper;
 
 /**
  * Created by cwancowicz on 9/24/16.
@@ -22,9 +24,11 @@ import org.umuc.swen.colorcast.model.mapping.MapType;
 public class ColorBrewerMapperUtil {
 
   private final CyActivator cyActivator;
+  private VisualStyle currentVisualStyle;
 
   public ColorBrewerMapperUtil(CyActivator cyActivator) {
     this.cyActivator = cyActivator;
+    createCurrentVisualStyle();
   }
 
   /**
@@ -42,6 +46,13 @@ public class ColorBrewerMapperUtil {
   }
 
   /**
+   * Applies a {@link PreviousVisualStyleMapper} to each network available in the {@link CyNetworkManager}
+   */
+  public void applyFilterToNetworks() {
+    applyFilterToNetworks(null, null, MapType.PREVIOUS);
+  }
+
+  /**
    * Applies a {@link FilterMapper} to specified {@link CyNetwork} and its
    * {@link Collection} of {@link CyNetworkView}
    *
@@ -52,8 +63,7 @@ public class ColorBrewerMapperUtil {
    */
   public void applyFilterToNetwork(CyNetwork network, String columnName, ColorBrewer colorBrewer, MapType mapType) {
     Collection<CyNetworkView> networkViews = cyActivator.getNetworkViewManager().getNetworkViews(network);
-    FilterMapper mapper = BrewerScaleMapperFactory.createFilterMapper(network, columnName, colorBrewer, mapType, cyActivator);
-
+    final FilterMapper mapper = createFilterMapper(network, columnName, colorBrewer, mapType);
     network.getDefaultNodeTable().getAllRows()
             .stream()
             .forEach(row -> mapper.applyFilterMapping(
@@ -79,6 +89,21 @@ public class ColorBrewerMapperUtil {
             .filter(name -> !name.isEmpty())
             .sorted((name1, name2) -> name1.compareTo(name2))
             .collect(Collectors.toList());
+  }
+
+  public void createCurrentVisualStyle() {
+    this.currentVisualStyle = this.cyActivator.getVisualStyleFactory().createVisualStyle(
+            this.cyActivator.getVisualMappingManager().getCurrentVisualStyle()
+    );
+  }
+
+  private FilterMapper createFilterMapper(CyNetwork network, String columnName, ColorBrewer colorBrewer, MapType mapType) {
+    switch (mapType) {
+      case PREVIOUS:
+        return new PreviousVisualStyleMapper(cyActivator, currentVisualStyle);
+      default:
+        return BrewerScaleMapperFactory.createFilterMapper(network, columnName, colorBrewer, mapType, cyActivator);
+    }
   }
 
   private boolean shouldFilterColumn(MapType mapType, CyColumn cyColumn) {

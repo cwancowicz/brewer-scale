@@ -63,8 +63,8 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     super(null, Resources.APP_TITLE, ModalityType.APPLICATION_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
-
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+    colorBrewerMapperUtil.createCurrentVisualStyle();
     initializeDialog(rootComponent);
   }
 
@@ -119,8 +119,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
         clearSelections();
         break;
       case CANCEL:
-        clearSelections();
-        dispose();
+        cancelSelected();
         break;
     }
   }
@@ -145,7 +144,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   }
 
   private void setDefaultSelectionToSequentialMapper() {
-    ((JRadioButton)((JPanel)mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
+    ((JRadioButton) ((JPanel) mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
     // remove all panels and preview panels
     colorPanel.setPreviewPanel(new JPanel());
     colorPanel.setChooserPanels(new AbstractColorChooserPanel[]{});
@@ -157,7 +156,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private void createAndAddColorPanel(JPanel panel) {
     colorPanel = new JColorChooser(new MyColorPanelSelectionModel(listener));
     colorPanel.removeAll();
-    ((MyColorPanelSelectionModel)colorPanel.getSelectionModel()).setSelectedColorChangedListener(this);
+    ((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).setSelectedColorChangedListener(this);
     panel.add(colorPanel, COLOR_PANEL_INDEX);
   }
 
@@ -217,9 +216,9 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     resetButton.addActionListener(this);
     previewButton.addActionListener(this);
 
-    buttonPanel.add(previewButton);
-    buttonPanel.add(resetButton);
     buttonPanel.add(cancelButton);
+    buttonPanel.add(resetButton);
+    buttonPanel.add(previewButton);
     buttonPanel.add(applyColorBrewerButton);
 
     panel.add(buttonPanel, BUTTONS_INDEX);
@@ -249,8 +248,14 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
             getSelectedMapType().get());
   }
 
+  private void cancelSelected() {
+    clearSelections();
+    colorBrewerMapperUtil.applyFilterToNetworks();
+    dispose();
+  }
+
   public class Resources {
     public static final String APP_TITLE = "Color Cast";
-    public static final String APP_MENU = "Tools."+APP_TITLE;
+    public static final String APP_MENU = "Tools." + APP_TITLE;
   }
 }

@@ -43,7 +43,7 @@ public class SequentialBrewerScaleMapper<T extends Number> extends VisualStyleFi
     double intervalSize = (maxValue - minValue) / maxColorSize;
 
     IntStream.rangeClosed(0, maxColorSize).forEach(itr ->
-            ((ContinuousMapping) this.visualMappingFunction).addPoint(minValue + (intervalSize * itr),
+            ((ContinuousMapping) getVisualMappingFunction()).addPoint(minValue + (intervalSize * itr),
                     new BoundaryRangeValues(colors[itr], colors[itr], colors[itr]))
     );
   }
