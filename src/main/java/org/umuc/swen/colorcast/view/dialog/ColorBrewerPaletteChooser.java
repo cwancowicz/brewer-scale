@@ -1,4 +1,4 @@
-package org.umuc.swen.colorcast.view;
+package org.umuc.swen.colorcast.view.dialog;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -20,6 +20,7 @@ import javax.swing.JRadioButton;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import org.jcolorbrewer.ColorBrewer;
 import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
+import org.umuc.swen.colorcast.view.MyColorPanelSelectionModel;
 import org.umuc.swen.colorcast.view.listener.RadioButtonListener;
 import org.umuc.swen.colorcast.model.mapping.MapType;
 import org.umuc.swen.colorcast.view.listener.ColumnSelectionListener;
@@ -256,6 +257,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   public class Resources {
     public static final String APP_TITLE = "Color Cast";
+    public static final String ABOUT = "About";
     public static final String APP_MENU = "Tools." + APP_TITLE;
   }
 }

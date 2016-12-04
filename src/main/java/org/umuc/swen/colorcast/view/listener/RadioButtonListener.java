@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import org.umuc.swen.colorcast.model.mapping.MapType;
-import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
+import org.umuc.swen.colorcast.view.dialog.ColorBrewerPaletteChooser;
 import org.umuc.swen.colorcast.view.palettes.MyDiscreteColorPalettePanel;
 import org.umuc.swen.colorcast.view.palettes.MyDivergingColorPalettePanel;
 import org.umuc.swen.colorcast.view.palettes.MySequentialColorPalettePanel;

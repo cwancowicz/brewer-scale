@@ -84,6 +84,7 @@ public class CyActivator extends AbstractCyActivator {
   private void registerServices(BundleContext bundleContext) {
     colorCastCyAction = new ColorCastCyAction(getRootComponent(), colorBrewerMapperUtil);
     registerService(bundleContext, colorCastCyAction, CyAction.class, new Properties());
+    registerService(bundleContext, new AboutColorCastCyAction(getRootComponent()), CyAction.class, new Properties());
   }
 }
 

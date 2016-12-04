@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
-import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
+import org.umuc.swen.colorcast.view.dialog.ColorBrewerPaletteChooser;
 
 /**
  * Created by cwancowicz on 11/19/16.
