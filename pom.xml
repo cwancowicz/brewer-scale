@@ -15,7 +15,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>org.umuc.swen</groupId>
 <artifactId>colorcast</artifactId>
-<version>1.0.0</version>
+<version>2.0.0</version>
 
 <name>${artifactId}</name>
 <packaging>bundle</packaging>
