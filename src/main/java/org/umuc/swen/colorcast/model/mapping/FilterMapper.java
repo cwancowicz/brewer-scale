@@ -10,5 +10,7 @@ import org.cytoscape.view.model.CyNetworkView;
  */
 public interface FilterMapper {
   void applyFilterMapping(Collection<CyNetworkView> networkViews, CyNode node, CyRow row);
+  void updateNetworkViews(Collection<CyNetworkView> networkViews);
+
   MapType getMapType();
 }

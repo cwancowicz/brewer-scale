@@ -1,8 +1,11 @@
-package org.umuc.swen.colorcast.view;
+package org.umuc.swen.colorcast.view.dialog;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -16,13 +19,15 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import org.jcolorbrewer.ColorBrewer;
-import org.jcolorbrewer.ui.SequentialColorPalettePanel;
 import org.umuc.swen.colorcast.model.util.ColorBrewerMapperUtil;
+import org.umuc.swen.colorcast.view.MyColorPanelSelectionModel;
 import org.umuc.swen.colorcast.view.listener.RadioButtonListener;
 import org.umuc.swen.colorcast.model.mapping.MapType;
 import org.umuc.swen.colorcast.view.listener.ColumnSelectionListener;
 import org.umuc.swen.colorcast.view.listener.DisableApplyColorSchemeListener;
 import org.umuc.swen.colorcast.view.listener.ColorChangeListener;
+import org.umuc.swen.colorcast.view.palettes.ColorCastPalettePanel;
+import org.umuc.swen.colorcast.view.palettes.MySequentialColorPalettePanel;
 
 /**
  * Created by cwancowicz on 11/1/16.
@@ -33,6 +38,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private final static String CANCEL = "Cancel";
   private final static String RESET = "Reset";
   private final static String COLUMN_LABEL = "Please select a data column below";
+  private final static String PREVIEW = "Preview";
 
   private final static int COLUMNS_LABEL_PANEL = 0;
   private final static int COLUMNS_INDEX = 1;
@@ -49,18 +55,18 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private ButtonGroup mappersButtonGroup;
   private DisableApplyColorSchemeListener listener;
   private JButton applyColorBrewerButton;
+  private JButton previewButton;
 
   private JPanel mainPanel = new JPanel();
   private JPanel buttonPanel;
 
-  public ColorBrewerPaletteChooser(ColorBrewerMapperUtil colorBrewerMapperUtil) {
+  public ColorBrewerPaletteChooser(Component rootComponent, ColorBrewerMapperUtil colorBrewerMapperUtil) {
     super(null, Resources.APP_TITLE, ModalityType.APPLICATION_MODAL);
     this.colorBrewerMapperUtil = colorBrewerMapperUtil;
     listener = new DisableApplyColorSchemeListener(this);
-
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-    initializeDialog();
+    colorBrewerMapperUtil.createCurrentVisualStyle();
+    initializeDialog(rootComponent);
   }
 
   public void setColorPanel(AbstractColorChooserPanel abstractColorChooserPanel, MapType mapType) {
@@ -86,10 +92,12 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
   public void disableApplyColorBrewerButton() {
     this.applyColorBrewerButton.setEnabled(false);
+    this.previewButton.setEnabled(false);
   }
 
   public void enableApplyColorBrewerButton() {
     this.applyColorBrewerButton.setEnabled(true);
+    this.previewButton.setEnabled(true);
   }
 
   @Override
@@ -104,12 +112,15 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
         setNewSelections();
         dispose();
         break;
+      case PREVIEW:
+        setNewSelections();
+        applySelectionToNetworkForPreview();
+        break;
       case RESET:
         clearSelections();
         break;
       case CANCEL:
-        clearSelections();
-        dispose();
+        cancelSelected();
         break;
     }
   }
@@ -118,7 +129,7 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
   }
 
-  private void initializeDialog() {
+  private void initializeDialog(Component rootComponent) {
     createAndAddJComboBoxForColumnSelection(mainPanel);
     createAndAddRadioButtonLayout(mainPanel);
     createAndAddColorPanel(mainPanel);
@@ -130,19 +141,23 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
 
     disableApplyColorBrewerButton();
     pack();
+    setLocationRelativeTo(rootComponent);
   }
 
   private void setDefaultSelectionToSequentialMapper() {
-    ((JRadioButton)((JPanel)mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
-    setColorPanel(new SequentialColorPalettePanel(), MapType.CONTINUOUS);
-    this.selectedMapType = Optional.of(MapType.CONTINUOUS);
+    ((JRadioButton) ((JPanel) mainPanel.getComponent(RADIO_BUTTON_INDEX)).getComponent(0)).setSelected(true);
+    // remove all panels and preview panels
+    colorPanel.setPreviewPanel(new JPanel());
+    colorPanel.setChooserPanels(new AbstractColorChooserPanel[]{});
+    setColorPanel(new MySequentialColorPalettePanel(), MapType.SEQUENTIAL);
+    this.selectedMapType = Optional.of(MapType.SEQUENTIAL);
     this.selectedColumnName = Optional.ofNullable((String) columnsComboBox.getSelectedItem());
   }
 
   private void createAndAddColorPanel(JPanel panel) {
     colorPanel = new JColorChooser(new MyColorPanelSelectionModel(listener));
     colorPanel.removeAll();
-    ((MyColorPanelSelectionModel)colorPanel.getSelectionModel()).setSelectedColorChangedListener(this);
+    ((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).setSelectedColorChangedListener(this);
     panel.add(colorPanel, COLOR_PANEL_INDEX);
   }
 
@@ -163,11 +178,11 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     JRadioButton diverging = new JRadioButton("Diverging");
     JRadioButton qualitative = new JRadioButton("Qualitative");
 
-    sequential.addActionListener(new RadioButtonListener(this, MapType.CONTINUOUS, listener));
+    sequential.addActionListener(new RadioButtonListener(this, MapType.SEQUENTIAL, listener));
     diverging.addActionListener(new RadioButtonListener(this, MapType.DIVERGING, listener));
     qualitative.addActionListener(new RadioButtonListener(this, MapType.DISCRETE, listener));
 
-    sequential.setActionCommand(MapType.CONTINUOUS.name());
+    sequential.setActionCommand(MapType.SEQUENTIAL.name());
     diverging.setActionCommand(MapType.DIVERGING.name());
     qualitative.setActionCommand(MapType.DISCRETE.name());
 
@@ -190,17 +205,21 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     applyColorBrewerButton = new JButton(APPLY_COLOR_PALLETE);
     JButton cancelButton = new JButton(CANCEL);
     JButton resetButton = new JButton(RESET);
+    previewButton = new JButton(PREVIEW);
 
     applyColorBrewerButton.setActionCommand(APPLY_COLOR_PALLETE);
     cancelButton.setActionCommand(CANCEL);
     resetButton.setActionCommand(RESET);
+    previewButton.setActionCommand(PREVIEW);
 
     applyColorBrewerButton.addActionListener(this);
     cancelButton.addActionListener(this);
     resetButton.addActionListener(this);
+    previewButton.addActionListener(this);
 
-    buttonPanel.add(resetButton);
     buttonPanel.add(cancelButton);
+    buttonPanel.add(resetButton);
+    buttonPanel.add(previewButton);
     buttonPanel.add(applyColorBrewerButton);
 
     panel.add(buttonPanel, BUTTONS_INDEX);
@@ -209,6 +228,10 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
   private void clearSelections() {
     selectedColorBrewer = Optional.empty();
     ((MyColorPanelSelectionModel) colorPanel.getSelectionModel()).setColorBrewer(null);
+    if (Objects.nonNull(colorPanel.getChooserPanels())) {
+      Arrays.asList(colorPanel.getChooserPanels()).stream().filter(Objects::nonNull)
+              .forEach(panel -> ((ColorCastPalettePanel) panel).deselectAllPalettes());
+    }
     selectedColumnName = Optional.empty();
     columnsComboBox.setSelectedItem(null);
     disableApplyColorBrewerButton();
@@ -220,8 +243,21 @@ public class ColorBrewerPaletteChooser extends JDialog implements ColorChangeLis
     selectedMapType = Optional.ofNullable(MapType.valueOf(mappersButtonGroup.getSelection().getActionCommand()));
   }
 
+  private void applySelectionToNetworkForPreview() {
+    colorBrewerMapperUtil.applyFilterToNetworks(getSelectedColumn().get(),
+            getSelectedPalette().get(),
+            getSelectedMapType().get());
+  }
+
+  private void cancelSelected() {
+    clearSelections();
+    colorBrewerMapperUtil.applyFilterToNetworks();
+    dispose();
+  }
+
   public class Resources {
     public static final String APP_TITLE = "Color Cast";
-    public static final String APP_MENU = "Apps";
+    public static final String ABOUT = "About";
+    public static final String APP_MENU = "Tools." + APP_TITLE;
   }
 }

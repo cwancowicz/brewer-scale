@@ -1,6 +1,6 @@
 package org.umuc.swen.colorcast.view.listener;
 
-import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
+import org.umuc.swen.colorcast.view.dialog.ColorBrewerPaletteChooser;
 
 /**
  * Created by cwancowicz on 11/3/16.
