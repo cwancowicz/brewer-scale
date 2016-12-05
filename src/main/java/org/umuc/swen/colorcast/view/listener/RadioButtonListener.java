@@ -3,11 +3,11 @@ package org.umuc.swen.colorcast.view.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
-import org.jcolorbrewer.ui.DivergingColorPalettePanel;
-import org.jcolorbrewer.ui.QualitativeColorPalettePanel;
-import org.jcolorbrewer.ui.SequentialColorPalettePanel;
 import org.umuc.swen.colorcast.model.mapping.MapType;
-import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
+import org.umuc.swen.colorcast.view.dialog.ColorBrewerPaletteChooser;
+import org.umuc.swen.colorcast.view.palettes.MyDiscreteColorPalettePanel;
+import org.umuc.swen.colorcast.view.palettes.MyDivergingColorPalettePanel;
+import org.umuc.swen.colorcast.view.palettes.MySequentialColorPalettePanel;
 
 /**
  * Created by cwancowicz on 11/1/16.
@@ -29,14 +29,14 @@ public class RadioButtonListener implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     AbstractColorChooserPanel abstractColorChooserPanel = null;
     switch (this.mapType) {
-      case CONTINUOUS:
-        abstractColorChooserPanel = new SequentialColorPalettePanel();
+      case SEQUENTIAL:
+        abstractColorChooserPanel = new MySequentialColorPalettePanel();
         break;
       case DISCRETE:
-        abstractColorChooserPanel = new QualitativeColorPalettePanel();
+        abstractColorChooserPanel = new MyDiscreteColorPalettePanel();
         break;
       case DIVERGING:
-        abstractColorChooserPanel = new DivergingColorPalettePanel();
+        abstractColorChooserPanel = new MyDivergingColorPalettePanel();
         break;
     }
     jDialog.setColorPanel(abstractColorChooserPanel, mapType);

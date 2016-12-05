@@ -2,7 +2,7 @@ package org.umuc.swen.colorcast.view.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.umuc.swen.colorcast.view.ColorBrewerPaletteChooser;
+import org.umuc.swen.colorcast.view.dialog.ColorBrewerPaletteChooser;
 
 /**
  * Created by cwancowicz on 11/4/16.
